@@ -46,9 +46,6 @@ public class Employee {
     private String address;
 
     @Column(nullable = false)
-    private Roles job_title;
-
-    @Column(nullable = false)
     private Date date_of_birth;
 
     @Column(nullable = false)
@@ -57,7 +54,7 @@ public class Employee {
     @OneToOne(mappedBy = "emp_Id")
     private UserDetails userDetails;
 
-    public Employee(String nic, String name_with_initials, String first_name, String middle_name, String last_name, String email, String contact, String gender, String address, Roles job_title, Date date_of_birth, Date date_of_appointment) {
+    public Employee(String nic, String name_with_initials, String first_name, String middle_name, String last_name, String email, String contact, String gender, String address, Date date_of_birth, Date date_of_appointment) {
         this.nic = nic;
         this.name_with_initials = name_with_initials;
         this.first_name = first_name;
@@ -67,7 +64,6 @@ public class Employee {
         this.contact = contact;
         this.gender = gender;
         this.address = address;
-        this.job_title = job_title;
         this.date_of_birth = date_of_birth;
         this.date_of_appointment = date_of_appointment;
     }

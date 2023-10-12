@@ -18,7 +18,6 @@ public class EmployeeDTO {
     private String contact;
     private String gender;
     private String address;
-    private Roles job_title;
     private Date date_of_birth;
     private Date date_of_appointment;
     private UserDetails userDetails;

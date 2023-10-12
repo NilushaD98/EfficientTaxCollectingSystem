@@ -22,8 +22,10 @@ public class RequestAddEmployee {
     private String contact;
     private String gender;
     private String address;
-    private Roles job_title;
     private Date date_of_birth;
     private Date date_of_appointment;
-    private UserDetails userDetails;
+    private String username;
+    private String password;
+    private String job_title;
+
 }

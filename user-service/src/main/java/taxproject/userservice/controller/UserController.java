@@ -27,15 +27,13 @@ public class UserController {
     }
     @PostMapping(path = "addEmployee")
     public ResponseEntity<StandardResponse> addEmployee(@RequestBody RequestAddEmployee requestAddEmployee){
+        System.out.println(requestAddEmployee);
         String save_status = userService.addEmployee(requestAddEmployee);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"User Saved Status :",save_status),HttpStatus.ACCEPTED
         );
     }
-    @GetMapping("test")
-    public String fsdf(){
-        return "hey";
-    }
+
 
 
 }

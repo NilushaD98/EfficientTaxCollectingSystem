@@ -1,6 +1,8 @@
 package taxproject.userservice.service.serviceIMPL;
 
+import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import taxproject.userservice.dto.request.RequestAddEmployee;
 import taxproject.userservice.dto.response.ResponseUserAuthDetailsDTO;
@@ -19,16 +21,13 @@ public class UserServiceIMPL implements UserService {
     @Autowired
     private UserDetailsRepo userDetailsRepo;
 
+
     @Override
     public ResponseUserAuthDetailsDTO findUserByUserName(String username) {
         UserDetails userDetails = userDetailsRepo.findByUsernameEquals(username);
         Employee employee = employeeRepo.findById(userDetails.getEmp_Id().getEmployeeID()).get();
 
-        return new ResponseUserAuthDetailsDTO(
-                userDetails.getUsername(),
-                userDetails.getPassword(),
-                employee.getJob_title().toString()
-        );
+        return null;
     }
     @Override
     public String addEmployee(RequestAddEmployee requestAddEmployee) {
@@ -42,10 +41,19 @@ public class UserServiceIMPL implements UserService {
                 requestAddEmployee.getContact(),
                 requestAddEmployee.getGender(),
                 requestAddEmployee.getAddress(),
-                requestAddEmployee.getJob_title(),
                 requestAddEmployee.getDate_of_birth(),
                 requestAddEmployee.getDate_of_appointment()
         );
-        return employeeRepo.save(employee).getFirst_name()+" saved.";
+        employeeRepo.save(employee);
+        if(employee.getEmployeeID() != null){
+            UserDetails userDetails = new UserDetails(
+                    requestAddEmployee.getUsername(),
+                    requestAddEmployee.getPassword(),
+                    requestAddEmployee.getJob_title(),
+                    employee
+            );
+            userDetailsRepo.save(userDetails);
+        }
+        return employee.getFirst_name()+" saved.";
     }
 }
