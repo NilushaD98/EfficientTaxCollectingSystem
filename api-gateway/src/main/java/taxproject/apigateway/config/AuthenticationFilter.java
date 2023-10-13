@@ -1,4 +1,5 @@
 package taxproject.apigateway.config;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -14,6 +15,7 @@ import taxproject.apigateway.service.JWTUtils;
 
 @Component
 @RefreshScope
+@Slf4j
 public class AuthenticationFilter implements GatewayFilter {
     @Autowired
     private RouteValidator validator;
@@ -37,6 +39,7 @@ public class AuthenticationFilter implements GatewayFilter {
                 return onError(exchange,HttpStatus.UNAUTHORIZED);
             }
             final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
+            log.info("token : {}",token);
 
             if (jwtUtils.isExpired(token)){
                 return onError(exchange,HttpStatus.UNAUTHORIZED);

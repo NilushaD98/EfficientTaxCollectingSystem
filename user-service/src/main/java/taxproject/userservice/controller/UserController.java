@@ -21,6 +21,7 @@ public class UserController {
     public ResponseUserAuthDetailsDTO getUserByUserName(
             @PathVariable(name = "username") String username
     ){
+        System.out.println(username);
         ResponseUserAuthDetailsDTO responseUserAuthDetailsDTO = userService.findUserByUserName(username);
         System.out.println(responseUserAuthDetailsDTO);
         return responseUserAuthDetailsDTO;
@@ -33,7 +34,4 @@ public class UserController {
                 new StandardResponse(200,"User Saved Status :",save_status),HttpStatus.ACCEPTED
         );
     }
-
-
-
 }
