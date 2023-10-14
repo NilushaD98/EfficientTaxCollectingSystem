@@ -1,4 +1,5 @@
 package taxproject.apigateway.config;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -10,6 +11,8 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import taxproject.apigateway.exceptions.JwtTokenMalformedException;
+import taxproject.apigateway.exceptions.JwtTokenMissingException;
 import taxproject.apigateway.service.JWTUtils;
 
 
@@ -41,9 +44,15 @@ public class AuthenticationFilter implements GatewayFilter {
             final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
             log.info("token : {}",token);
 
-            if (jwtUtils.isExpired(token)){
-                return onError(exchange,HttpStatus.UNAUTHORIZED);
+            try {
+                jwtUtils.validateToken(token);
+            } catch (JwtTokenMalformedException e) {
+                throw new RuntimeException(e);
+            } catch (JwtTokenMissingException e) {
+                throw new RuntimeException(e);
             }
+            Claims claims = jwtUtils.getClaims(token);
+            exchange.getRequest().mutate().header("id", String.valueOf(claims.get("id"))).build();
 
         }
         return chain.filter(exchange);

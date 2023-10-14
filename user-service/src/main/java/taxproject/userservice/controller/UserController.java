@@ -11,7 +11,7 @@ import taxproject.userservice.service.UserService;
 import taxproject.userservice.util.StandardResponse;
 
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/users/")
 public class UserController {
 
     @Autowired

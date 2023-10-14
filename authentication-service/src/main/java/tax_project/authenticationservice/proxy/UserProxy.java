@@ -8,7 +8,7 @@ import tax_project.authenticationservice.dto.response.ResponseUserAuthDetailsDTO
 @FeignClient(name = "user-service")
 public interface UserProxy {
 
-    @GetMapping(path = "/user/findUserByUserName/{username}")
+    @GetMapping(path = "/users/findUserByUserName/{username}")
     public ResponseUserAuthDetailsDTO getUserByUserName(
             @PathVariable(name = "username") String username
     );

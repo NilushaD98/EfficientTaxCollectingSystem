@@ -2,25 +2,53 @@ package taxproject.apigateway.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.security.Keys;
 import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import taxproject.apigateway.exceptions.JwtTokenMalformedException;
+import taxproject.apigateway.exceptions.JwtTokenMissingException;
+
 @Slf4j
 @Service
 public class JWTUtils {
 
-    private String secret = "MiAVzqUXy5Tfr1kVIGpPMiAVzqUXy5Tfr1kVIGpP";
+    @Value("${jwt.secret}")
+    private String secret;
     private Key key;
-    @PostConstruct
-    public void initKey(){
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-    }
     public Claims getClaims(String token){
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
+        try{
+            Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return body;
+        }catch (Exception e){
+            log.error("{}",e.getMessage());
+        }
+        return null;
+    }
+    public void validateToken(String token) throws JwtTokenMalformedException, JwtTokenMissingException {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        } catch (SignatureException ex) {
+            throw new JwtTokenMalformedException("Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            throw new JwtTokenMalformedException("Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            throw new JwtTokenMalformedException("Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            throw new JwtTokenMalformedException("Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            throw new JwtTokenMissingException("JWT claims string is empty.");
+        }
     }
     public boolean isExpired(String token){
         try {

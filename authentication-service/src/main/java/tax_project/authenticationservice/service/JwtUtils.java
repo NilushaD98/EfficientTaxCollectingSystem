@@ -2,48 +2,63 @@ package tax_project.authenticationservice.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import tax_project.authenticationservice.exceptions.JwtTokenMalformedException;
+import tax_project.authenticationservice.exceptions.JwtTokenMissingException;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 @Service
 public class JwtUtils {
 
-    private String secret = "MiAVzqUXy5Tfr1kVIGpPMiAVzqUXy5Tfr1kVIGpP";
-    private String expiration = "86400";
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.token.validity}")
+    private long tokenValidity;
     private Key key;
 
-    @PostConstruct
-    public void initKey(){
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-    }
-    public Claims getClaims(String token){
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
+    public Claims getClaims(final String token) {
+        try {
+            Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+            return body;
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " => " + e);
+        }
+        return null;
     }
     public Date getExpirationDate(String token){
         return getClaims(token).getExpiration();
     }
-    public String generate(String username,String role, String tokenType){
-        Map<String,String> claims = Map.of("username",username,"role",role);
-        long expMillis = "ACCESS".equalsIgnoreCase(tokenType)
-                ? Long.parseLong(expiration) *1000
-                : Long.parseLong(expiration) *1000*5;
-        final Date now = new Date();
-        final Date exp = new Date(now.getTime() + expMillis);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(claims.get("username"))
-                .setIssuedAt(now)
-                .setExpiration(exp)
-                .signWith(key)
-                .compact();
+    public String generate(String username){
+        Claims claims = Jwts.claims().setSubject(username);
+        long nowMillis = System.currentTimeMillis();
+        long expMillis = nowMillis + tokenValidity;
+        Date exp = new Date(expMillis);
+        return Jwts.builder().setClaims(claims).setIssuedAt(new Date(nowMillis)).setExpiration(exp)
+                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }
-    private boolean isExpired(String token){
-        return getExpirationDate(token).before(new Date());
+    public void validateToken(final String token) throws JwtTokenMalformedException, JwtTokenMissingException {
+        try {
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+        } catch (SignatureException ex) {
+            throw new JwtTokenMalformedException("Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            throw new JwtTokenMalformedException("Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            throw new JwtTokenMalformedException("Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            throw new JwtTokenMalformedException("Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            throw new JwtTokenMissingException("JWT claims string is empty.");
+        }
     }
 }
