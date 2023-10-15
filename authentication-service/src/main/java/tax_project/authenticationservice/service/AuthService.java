@@ -21,8 +21,8 @@ public class AuthService {
         boolean checkpw = BCrypt.checkpw(authRequest.getPassword(), userByUserName.getPassword());
 
         if (checkpw){
-            String access_token = jwtUtils.generate(userByUserName.getUsername());
-            String refresh_token = jwtUtils.generate(userByUserName.getUsername());
+            String access_token = jwtUtils.generate(userByUserName.getUsername(),userByUserName.getJob_title());
+            String refresh_token = jwtUtils.generate(userByUserName.getUsername(),userByUserName.getJob_title());
 
             return new AuthResponse(access_token,refresh_token);
         }

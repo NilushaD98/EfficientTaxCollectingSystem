@@ -46,16 +46,26 @@ public class AuthenticationFilter implements GatewayFilter {
 
             try {
                 jwtUtils.validateToken(token);
+                Claims claims = jwtUtils.getClaims(token);
+                String requsetedPath = request.getPath().toString();
+                log.info("{}",requsetedPath);
+                String userRole = claims.get("role",String.class);
+                log.info("{}",userRole);
+                if(requsetedPath.startsWith("/admin/")&& "ADMIN".equals(userRole)){
+                    exchange.getRequest().mutate().header("id", String.valueOf(claims.get("id"))).build();
+                    return chain.filter(exchange);
+                } else if (requsetedPath.startsWith("/users/")&& "USER".equals(userRole)){
+                    exchange.getRequest().mutate().header("id", String.valueOf(claims.get("id"))).build();
+                    return chain.filter(exchange);
+                }else {
+                    return onError(exchange,HttpStatus.UNAUTHORIZED);
+                }
             } catch (JwtTokenMalformedException e) {
                 throw new RuntimeException(e);
             } catch (JwtTokenMissingException e) {
                 throw new RuntimeException(e);
             }
-            Claims claims = jwtUtils.getClaims(token);
-            exchange.getRequest().mutate().header("id", String.valueOf(claims.get("id"))).build();
-
         }
         return chain.filter(exchange);
-
     }
 }

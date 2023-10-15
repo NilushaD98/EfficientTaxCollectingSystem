@@ -38,8 +38,10 @@ public class JwtUtils {
     public Date getExpirationDate(String token){
         return getClaims(token).getExpiration();
     }
-    public String generate(String username){
+    public String generate(String username,String role){
         Claims claims = Jwts.claims().setSubject(username);
+        claims.put("id", username);
+        claims.put("role", role);
         long nowMillis = System.currentTimeMillis();
         long expMillis = nowMillis + tokenValidity;
         Date exp = new Date(expMillis);
