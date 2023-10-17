@@ -1,19 +1,15 @@
-package taxproject.userservice.dto;
+package taxproject.userservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.mapstruct.control.NoComplexMapping;
-import taxproject.userservice.dto.enu.Roles;
-import taxproject.userservice.entity.UserDetails;
 
-import javax.persistence.*;
+
 import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EmployeeDTO {
-
+public class ResponseEmployeeDTO {
     private Long employeeID;
     private String nic;
     private String name_with_initials;
@@ -26,6 +22,4 @@ public class EmployeeDTO {
     private String address;
     private Date date_of_birth;
     private Date date_of_appointment;
-
-
 }

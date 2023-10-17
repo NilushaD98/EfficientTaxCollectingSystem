@@ -6,4 +6,6 @@ import taxproject.userservice.entity.UserDetails;
 @Repository
 public interface UserDetailsRepo extends JpaRepository<UserDetails,Long> {
     UserDetails findByUsernameEquals(String username);
+
+    UserDetails findByEmp_IdEquals(Long userID);
 }
