@@ -26,4 +26,7 @@ public class GroupCompany {
     private String countryOfIncorporation;
     @Column(nullable = false)
     private Date dateOfIncorporation;
+    @OneToOne(mappedBy = "groupCompanyID")
+    private Company company;
+
 }

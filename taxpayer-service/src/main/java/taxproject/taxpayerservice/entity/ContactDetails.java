@@ -41,7 +41,9 @@ public class ContactDetails {
     private String email;
     @Column(nullable = false)
     private String nameOfContactPerson;
-    @OneToOne(mappedBy = "contactDetailsID")
+    @OneToOne(mappedBy = "companyContactDetailsID")
     private Company company;
+    @OneToOne(mappedBy = "personContactDetailsID")
+    private Person person;
 
 }

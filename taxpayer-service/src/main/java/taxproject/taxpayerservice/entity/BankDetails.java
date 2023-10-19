@@ -19,6 +19,8 @@ public class BankDetails {
     private String bankName;
     @Column(nullable = false,unique = true)
     private String accountNumber;
-    @OneToOne
+    @OneToOne(mappedBy = "companyBankDetailsID")
     private Company company;
+    @OneToOne(mappedBy = "personBankDetailsID")
+    private Person person;
 }

@@ -43,14 +43,18 @@ public class Company {
     private String foreignCompanyDateOfIncorporation;
     private String foreignCompanyCountryOfIncorporation;
     private Date foreignCompanyDateOfCommencement;
-    @Column(nullable = false)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ContactDetails contactDetailsID;
-    @Column(nullable = false)
+    private GroupCompany groupCompanyID;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private ContactDetails companyContactDetailsID;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Director directorID;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private BankDetails companyBankDetailsID;
 
 
 }

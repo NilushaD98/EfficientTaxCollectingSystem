@@ -1,6 +1,5 @@
 package taxproject.taxpayerservice.entity;
 
-import com.fasterxml.jackson.databind.DatabindException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,32 +12,32 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Director {
-
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int directorID;
+    private int personID;
     @Column(nullable = false,unique = true)
-    private String NICOrPassportNo;
-    private String IssuanceCountryOfPassport;
-    @Column(nullable = false)
-    private String fullName;
+    private String nic;
     @Column(nullable = false)
     private String nameWithInitials;
     @Column(nullable = false)
-    private Date dateOfBirth;
+    private String fullName;
     @Column(nullable = false)
-    private String address;
+    private Date birthDate;
     @Column(nullable = false)
-    private int postalCode;
+    private String country;
     @Column(nullable = false)
-    private String contactMobile;
+    private String gender;
     @Column(nullable = false)
-    private String contactOffice;
+    private String race;
     @Column(nullable = false)
-    private String contactHome;
+    private String jobTitle;
     @Column(nullable = false)
-    private String directorEmail;
-    @OneToOne(mappedBy = "directorID")
-    private Company company;
+    private String nationality;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private ContactDetails personContactDetailsID;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private BankDetails personBankDetailsID;
 }
