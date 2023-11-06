@@ -3,15 +3,13 @@ package taxproject.taxpayerservice.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import taxproject.taxpayerservice.entity.*;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RequestAddCompanyDTO {
+public class RequestAddNewTaxpayerCompanyDTO {
     //company details
     private String registrationNumber;
     private String companyName;

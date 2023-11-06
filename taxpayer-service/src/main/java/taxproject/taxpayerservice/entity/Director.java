@@ -1,6 +1,5 @@
 package taxproject.taxpayerservice.entity;
 
-import com.fasterxml.jackson.databind.DatabindException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,4 +40,18 @@ public class Director {
     private String directorEmail;
     @OneToOne(mappedBy = "directorID")
     private Company company;
+
+    public Director(String NICOrPassportNo, String issuanceCountryOfPassport, String fullName, String nameWithInitials, Date dateOfBirth, String address, int postalCode, String contactMobile, String contactOffice, String contactHome, String directorEmail) {
+        this.NICOrPassportNo = NICOrPassportNo;
+        IssuanceCountryOfPassport = issuanceCountryOfPassport;
+        this.fullName = fullName;
+        this.nameWithInitials = nameWithInitials;
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+        this.postalCode = postalCode;
+        this.contactMobile = contactMobile;
+        this.contactOffice = contactOffice;
+        this.contactHome = contactHome;
+        this.directorEmail = directorEmail;
+    }
 }
