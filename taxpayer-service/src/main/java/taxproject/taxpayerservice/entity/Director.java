@@ -1,6 +1,5 @@
 package taxproject.taxpayerservice.entity;
 
-import com.fasterxml.jackson.databind.DatabindException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

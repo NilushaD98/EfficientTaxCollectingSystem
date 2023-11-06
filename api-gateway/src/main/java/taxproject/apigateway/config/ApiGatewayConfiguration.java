@@ -21,6 +21,9 @@ public class ApiGatewayConfiguration {
                 .route("auth-service",p -> p.path("/auth/**")
                         .filters(f-> f.filters(filter))
                         .uri("lb://auth-service"))
+                .route("my-express-app",p-> p.path("/express/**")
+                        .filters(f-> f.filters(filter))
+                        .uri("lb://my-express-app"))
                 .route(p->p
                         .path("/fsd-new")
                         .filters(f -> f.rewritePath(
