@@ -56,5 +56,26 @@ public class Company {
     @JoinColumn
     private BankDetails companyBankDetailsID;
 
-
+    public Company(String registrationNumber, String companyName, CompanyTypes comTypeID, Date dateOfIncorporation, String countryOfIncorporation, String principalActivityOfBusiness, String contact, String email, String websiteURL, Boolean BOIRegisterStatus, Date BOIStartDate, Date BOIExpiryDate, String bankCode, String foreignCompanyDateOfIncorporation, String foreignCompanyCountryOfIncorporation, Date foreignCompanyDateOfCommencement, GroupCompany groupCompanyID, ContactDetails companyContactDetailsID, Director directorID, BankDetails companyBankDetailsID) {
+        this.registrationNumber = registrationNumber;
+        this.companyName = companyName;
+        this.comTypeID = comTypeID;
+        this.dateOfIncorporation = dateOfIncorporation;
+        this.countryOfIncorporation = countryOfIncorporation;
+        this.principalActivityOfBusiness = principalActivityOfBusiness;
+        this.contact = contact;
+        this.email = email;
+        this.websiteURL = websiteURL;
+        this.BOIRegisterStatus = BOIRegisterStatus;
+        this.BOIStartDate = BOIStartDate;
+        this.BOIExpiryDate = BOIExpiryDate;
+        BankCode = bankCode;
+        this.foreignCompanyDateOfIncorporation = foreignCompanyDateOfIncorporation;
+        this.foreignCompanyCountryOfIncorporation = foreignCompanyCountryOfIncorporation;
+        this.foreignCompanyDateOfCommencement = foreignCompanyDateOfCommencement;
+        this.groupCompanyID = groupCompanyID;
+        this.companyContactDetailsID = companyContactDetailsID;
+        this.directorID = directorID;
+        this.companyBankDetailsID = companyBankDetailsID;
+    }
 }

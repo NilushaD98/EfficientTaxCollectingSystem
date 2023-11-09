@@ -29,4 +29,11 @@ public class GroupCompany {
     @OneToOne(mappedBy = "groupCompanyID")
     private Company company;
 
+    public GroupCompany(String groupCompanyRegistrationNo, String nameOfParentCountry, String addressOfGroupCompany, String countryOfIncorporation, Date dateOfIncorporation) {
+        this.groupCompanyRegistrationNo = groupCompanyRegistrationNo;
+        this.nameOfParentCountry = nameOfParentCountry;
+        this.addressOfGroupCompany = addressOfGroupCompany;
+        this.countryOfIncorporation = countryOfIncorporation;
+        this.dateOfIncorporation = dateOfIncorporation;
+    }
 }

@@ -8,6 +8,6 @@ import taxproject.taxpayerservice.entity.Director;
 @Repository
 public interface DirectorRepo extends JpaRepository<Director,Integer> {
 
-    @Query(value = "SELECT * from director where NICOrPassportNo=?1",nativeQuery = true)
+    @Query(value = "SELECT * from director where nicor_passport_no=?1",nativeQuery = true)
     Director findDirectorByNICOrPassportNoEquals(String nicOrPassportNo);
 }

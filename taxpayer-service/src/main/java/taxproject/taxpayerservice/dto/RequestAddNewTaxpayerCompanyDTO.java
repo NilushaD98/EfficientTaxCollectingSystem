@@ -39,7 +39,7 @@ public class RequestAddNewTaxpayerCompanyDTO {
     private String address;
     private int postalCode;
     private String province;
-    private String District;
+    private String district;
     private String divisionalSecretariat;
     private String gramaNiladhariDivision;
     private String mobileContact;

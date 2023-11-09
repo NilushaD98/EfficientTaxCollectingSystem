@@ -21,13 +21,13 @@ public class TaxPayerController {
     @Autowired
     private TaxpayerService taxpayerService;
 
-    @PostMapping("/add_new_company_type")
+    @PostMapping("add_new_company_type")
     public ResponseEntity<StandardResponse> addNewCompanyType(@RequestBody RequestAddCompanyTypeDTO requestAddCompanyTypeDTO){
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(201,"Company Type Saved Status : ",taxpayerService.addNewCompanyType(requestAddCompanyTypeDTO)),HttpStatus.ACCEPTED
         );
     }
-    @PostMapping("/register_new_company")
+    @PostMapping("register_new_company")
     public ResponseEntity<StandardResponse> registerNewCompany(@RequestBody RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO){
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(201,"Company Register Status : ",taxpayerService.registerNewCompany(requestAddNewTaxpayerCompanyDTO)), HttpStatus.ACCEPTED

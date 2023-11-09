@@ -23,4 +23,9 @@ public class BankDetails {
     private Company company;
     @OneToOne(mappedBy = "personBankDetailsID")
     private Person person;
+
+    public BankDetails(String bankName, String accountNumber) {
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+    }
 }

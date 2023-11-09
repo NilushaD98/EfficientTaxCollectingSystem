@@ -46,4 +46,19 @@ public class ContactDetails {
     @OneToOne(mappedBy = "personContactDetailsID")
     private Person person;
 
+    public ContactDetails(int premisesNo, int unitNo, String address, int postalCode, String province, String district, String divisionalSecretariat, String gramaNiladhariDivision, String mobileContact, String officeContact, String homeContact, String email, String nameOfContactPerson) {
+        this.premisesNo = premisesNo;
+        this.unitNo = unitNo;
+        this.address = address;
+        this.postalCode = postalCode;
+        this.province = province;
+        District = district;
+        this.divisionalSecretariat = divisionalSecretariat;
+        this.gramaNiladhariDivision = gramaNiladhariDivision;
+        this.mobileContact = mobileContact;
+        this.officeContact = officeContact;
+        this.homeContact = homeContact;
+        this.email = email;
+        this.nameOfContactPerson = nameOfContactPerson;
+    }
 }
