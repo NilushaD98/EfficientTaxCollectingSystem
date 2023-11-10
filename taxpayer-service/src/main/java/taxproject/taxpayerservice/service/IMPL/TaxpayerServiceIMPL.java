@@ -2,11 +2,14 @@ package taxproject.taxpayerservice.service.IMPL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import taxproject.taxpayerservice.dto.RequestAddCompanyTypeDTO;
-import taxproject.taxpayerservice.dto.RequestAddNewTaxpayerCompanyDTO;
+import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
+import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
+import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
+import taxproject.taxpayerservice.dto.response.ResponseCompanyForTaxPayingDTO;
+import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import taxproject.taxpayerservice.entity.*;
-import taxproject.taxpayerservice.exception.DirectorIdAlreadyTakenException;
-import taxproject.taxpayerservice.exception.GroupOfCompanyDetailsWrongException;
+import taxproject.taxpayerservice.exception.CompanyRegistrationNumberWrongException;
+import taxproject.taxpayerservice.exception.PersonNotInDatabaseException;
 import taxproject.taxpayerservice.repo.*;
 import taxproject.taxpayerservice.service.TaxpayerService;
 import taxproject.taxpayerservice.util.mappers.CompanyTypeMapper;
@@ -32,55 +35,114 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
     @Autowired
     private CompanyTypeMapper companyTypeMapper;
 
+    private int companyBlockChainID = 0;
+    private int personBlockChainID = 0;
     @Override
     public String addNewCompanyType(RequestAddCompanyTypeDTO requestAddCompanyTypeDTO) {
         return companyTypeRepo.save(companyTypeMapper.DTOToEntity(requestAddCompanyTypeDTO)).getCompanyType() +" saved successfully.";
     }
     @Override
+    public String registerNewPerson(RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO) {
+        BankDetails bankDetails = new BankDetails(
+                requestAddNewTaxpayerPersonDTO.getBankName(),
+                requestAddNewTaxpayerPersonDTO.getAccountNumber()
+        );
+        bankDetailsRepo.save(bankDetails);
+
+        ContactDetails contactDetails = new ContactDetails(
+                requestAddNewTaxpayerPersonDTO.getPremisesNo(),
+                requestAddNewTaxpayerPersonDTO.getUnitNo(),
+                requestAddNewTaxpayerPersonDTO.getAddress(),
+                requestAddNewTaxpayerPersonDTO.getPostalCode(),
+                requestAddNewTaxpayerPersonDTO.getProvince(),
+                requestAddNewTaxpayerPersonDTO.getDistrict(),
+                requestAddNewTaxpayerPersonDTO.getDivisionalSecretariat(),
+                requestAddNewTaxpayerPersonDTO.getGramaNiladhariDivision(),
+                requestAddNewTaxpayerPersonDTO.getMobileContact(),
+                requestAddNewTaxpayerPersonDTO.getOfficeContact(),
+                requestAddNewTaxpayerPersonDTO.getHomeContact(),
+                requestAddNewTaxpayerPersonDTO.getEmail(),
+                requestAddNewTaxpayerPersonDTO.getNameOfContactPerson()
+        );
+        contactDetailsRepo.save(contactDetails);
+        Person person = new Person(
+                requestAddNewTaxpayerPersonDTO.getNic(),
+                requestAddNewTaxpayerPersonDTO.getNameWithInitials(),
+                requestAddNewTaxpayerPersonDTO.getFullName(),
+                requestAddNewTaxpayerPersonDTO.getBirthDate(),
+                requestAddNewTaxpayerPersonDTO.getCountry(),
+                requestAddNewTaxpayerPersonDTO.getGender(),
+                requestAddNewTaxpayerPersonDTO.getRace(),
+                requestAddNewTaxpayerPersonDTO.getJobTitle(),
+                requestAddNewTaxpayerPersonDTO.getNationality(),
+                contactDetails,
+                bankDetails,
+                ++personBlockChainID
+        );
+        //register the person in blockchain
+
+
+        return personRepo.save(person).getNameWithInitials() +" saved.";
+    }
+    @Override
+    public ResponseCompanyForTaxPayingDTO getCompanyByRegNum(String registerNumber) {
+        Company company = companyRepo.getCompaniesByRegistrationNumberEquals(registerNumber);
+        if(company != null){
+            //need check is it available on blockchain
+
+            return new ResponseCompanyForTaxPayingDTO(
+                    company.getCompanyID(),
+                    company.getRegistrationNumber(),
+                    company.getCompanyName(),
+                    company.getBlockChainID()
+            );
+        }else {
+            throw new CompanyRegistrationNumberWrongException();
+        }
+    }
+
+    @Override
+    public ResponsePersonForTaxPayingDTO getPersonByNIC(String nic) {
+        Person person = personRepo.getPersonByNicEquals(nic);
+        if(person != null){
+            //need check he is in available in blockchain
+            return new ResponsePersonForTaxPayingDTO(
+                    person.getPersonID(),
+                    person.getNic(),
+                    person.getNameWithInitials(),
+                    person.getBlockChainID()
+            );
+        }else{
+            throw new PersonNotInDatabaseException();
+        }
+    }
+
+    @Override
     public String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO) {
 
-        Director director2 = new Director();
-        Director director = directorRepo.findDirectorByNICOrPassportNoEquals(requestAddNewTaxpayerCompanyDTO.getNICOrPassportNo());
-        if(director == null){
-            Director director1 = new Director(
-                    requestAddNewTaxpayerCompanyDTO.getNICOrPassportNo(),
-                    requestAddNewTaxpayerCompanyDTO.getIssuanceCountryOfPassport(),
-                    requestAddNewTaxpayerCompanyDTO.getFullName(),
-                    requestAddNewTaxpayerCompanyDTO.getNameWithInitials(),
-                    requestAddNewTaxpayerCompanyDTO.getDateOfBirth(),
-                    requestAddNewTaxpayerCompanyDTO.getDirectorAddress(),
-                    requestAddNewTaxpayerCompanyDTO.getDirectorPostalCode(),
-                    requestAddNewTaxpayerCompanyDTO.getContactMobile(),
-                    requestAddNewTaxpayerCompanyDTO.getContactOffice(),
-                    requestAddNewTaxpayerCompanyDTO.getContactHome(),
-                    requestAddNewTaxpayerCompanyDTO.getDirectorEmail()
-            );
-            directorRepo.save(director1);
-            director2 =director1;
-        }else {
-            throw new DirectorIdAlreadyTakenException();
-        }
-        GroupCompany groupCompany2 = new GroupCompany();
-        GroupCompany groupCompany1 = groupCompanyRepo.findGroupCompanyByGroupCompanyRegistrationNoEquals(requestAddNewTaxpayerCompanyDTO.getGroupCompanyRegistrationNo());
+        Director director = new Director(
+                requestAddNewTaxpayerCompanyDTO.getNICOrPassportNo(),
+                requestAddNewTaxpayerCompanyDTO.getIssuanceCountryOfPassport(),
+                requestAddNewTaxpayerCompanyDTO.getFullName(),
+                requestAddNewTaxpayerCompanyDTO.getNameWithInitials(),
+                requestAddNewTaxpayerCompanyDTO.getDateOfBirth(),
+                requestAddNewTaxpayerCompanyDTO.getDirectorAddress(),
+                requestAddNewTaxpayerCompanyDTO.getDirectorPostalCode(),
+                requestAddNewTaxpayerCompanyDTO.getContactMobile(),
+                requestAddNewTaxpayerCompanyDTO.getContactOffice(),
+                requestAddNewTaxpayerCompanyDTO.getContactHome(),
+                requestAddNewTaxpayerCompanyDTO.getDirectorEmail()
+        );
+        directorRepo.save(director);
+        GroupCompany groupCompany = new GroupCompany(
+                requestAddNewTaxpayerCompanyDTO.getGroupCompanyRegistrationNo(),
+                requestAddNewTaxpayerCompanyDTO.getNameOfParentCountry(),
+                requestAddNewTaxpayerCompanyDTO.getAddressOfGroupCompany(),
+                requestAddNewTaxpayerCompanyDTO.getGroupCompanyCountryOfIncorporation(),
+                requestAddNewTaxpayerCompanyDTO.getGroupCompanyDateOfIncorporation()
+        );
+        groupCompanyRepo.save(groupCompany);
 
-        if(groupCompany1 == null){
-            GroupCompany groupCompany = new GroupCompany(
-                    requestAddNewTaxpayerCompanyDTO.getGroupCompanyRegistrationNo(),
-                    requestAddNewTaxpayerCompanyDTO.getNameOfParentCountry(),
-                    requestAddNewTaxpayerCompanyDTO.getAddressOfGroupCompany(),
-                    requestAddNewTaxpayerCompanyDTO.getGroupCompanyCountryOfIncorporation(),
-                    requestAddNewTaxpayerCompanyDTO.getGroupCompanyDateOfIncorporation()
-            );
-            groupCompanyRepo.save(groupCompany);
-            groupCompany2 = groupCompany;
-        }else if (
-                groupCompany1.getGroupCompanyRegistrationNo().equals(requestAddNewTaxpayerCompanyDTO.getGroupCompanyRegistrationNo()) &&
-                groupCompany1.getDateOfIncorporation().equals(requestAddNewTaxpayerCompanyDTO.getGroupCompanyDateOfIncorporation())
-        ){
-            groupCompany2 = groupCompany1;
-        }else {
-            throw new GroupOfCompanyDetailsWrongException();
-        }
         ContactDetails contactDetails = new ContactDetails(
                 requestAddNewTaxpayerCompanyDTO.getPremisesNo(),
                 requestAddNewTaxpayerCompanyDTO.getUnitNo(),
@@ -121,11 +183,14 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
                 requestAddNewTaxpayerCompanyDTO.getForeignCompanyDateOfIncorporation(),
                 requestAddNewTaxpayerCompanyDTO.getForeignCompanyCountryOfIncorporation(),
                 requestAddNewTaxpayerCompanyDTO.getForeignCompanyDateOfCommencement(),
-                groupCompany1,
+                groupCompany,
                 contactDetails,
-                director2,
-                bankDetails
+                director,
+                bankDetails,
+                ++companyBlockChainID
         );
+        // register the company in blockchain
+
         return companyRepo.save(company).getCompanyName()+" saved.";
     }
 }

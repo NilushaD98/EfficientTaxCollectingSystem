@@ -1,16 +1,14 @@
 package taxproject.taxpayerservice.controller;
 
-import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import taxproject.taxpayerservice.dto.RequestAddCompanyTypeDTO;
-import taxproject.taxpayerservice.dto.RequestAddNewTaxpayerCompanyDTO;
-import taxproject.taxpayerservice.dto.RequestAddNewTaxpayerPersonDTO;
+import org.springframework.web.bind.annotation.*;
+import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
+import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
+import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
+import taxproject.taxpayerservice.dto.response.ResponseCompanyForTaxPayingDTO;
+import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import taxproject.taxpayerservice.service.TaxpayerService;
 import taxproject.taxpayerservice.util.StandardResponse;
 
@@ -33,4 +31,25 @@ public class TaxPayerController {
                 new StandardResponse(201,"Company Register Status : ",taxpayerService.registerNewCompany(requestAddNewTaxpayerCompanyDTO)), HttpStatus.ACCEPTED
         );
     }
+    @PostMapping("register_new_person")
+    public ResponseEntity<StandardResponse> registerNewPerson(@RequestBody RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO){
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(201,"Person Register Status",taxpayerService.registerNewPerson(requestAddNewTaxpayerPersonDTO)),HttpStatus.ACCEPTED
+        );
+    }
+    @GetMapping("get_compnay_by_register_number_for_tax_paying/{registerNumber}")
+    public ResponseCompanyForTaxPayingDTO getCompanyByRegisterNumber(
+            @PathVariable (value = "registerNumber") String registerNumber
+    ){
+        return taxpayerService.getCompanyByRegNum(registerNumber);
+    }
+
+    @GetMapping("get_person_by_nicr_for_tax_paying/{nicNumber}")
+    public ResponsePersonForTaxPayingDTO getPersonByNIC(
+            @PathVariable(value = "nicNumber") String nic
+    ){
+        return taxpayerService.getPersonByNIC(nic);
+    }
+
+
 }

@@ -1,9 +1,8 @@
-package taxproject.taxpayerservice.dto;
+package taxproject.taxpayerservice.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Date;
 
 @AllArgsConstructor

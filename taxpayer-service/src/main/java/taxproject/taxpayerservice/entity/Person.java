@@ -40,4 +40,20 @@ public class Person {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private BankDetails personBankDetailsID;
+    private int blockChainID;
+
+    public Person(String nic, String nameWithInitials, String fullName, Date birthDate, String country, String gender, String race, String jobTitle, String nationality, ContactDetails personContactDetailsID, BankDetails personBankDetailsID,int blockChainID) {
+        this.nic = nic;
+        this.nameWithInitials = nameWithInitials;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+        this.country = country;
+        this.gender = gender;
+        this.race = race;
+        this.jobTitle = jobTitle;
+        this.nationality = nationality;
+        this.personContactDetailsID = personContactDetailsID;
+        this.personBankDetailsID = personBankDetailsID;
+        this.blockChainID = blockChainID;
+    }
 }

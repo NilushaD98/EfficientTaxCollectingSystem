@@ -55,8 +55,9 @@ public class Company {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private BankDetails companyBankDetailsID;
+    private int blockChainID;
 
-    public Company(String registrationNumber, String companyName, CompanyTypes comTypeID, Date dateOfIncorporation, String countryOfIncorporation, String principalActivityOfBusiness, String contact, String email, String websiteURL, Boolean BOIRegisterStatus, Date BOIStartDate, Date BOIExpiryDate, String bankCode, String foreignCompanyDateOfIncorporation, String foreignCompanyCountryOfIncorporation, Date foreignCompanyDateOfCommencement, GroupCompany groupCompanyID, ContactDetails companyContactDetailsID, Director directorID, BankDetails companyBankDetailsID) {
+    public Company(String registrationNumber, String companyName, CompanyTypes comTypeID, Date dateOfIncorporation, String countryOfIncorporation, String principalActivityOfBusiness, String contact, String email, String websiteURL, Boolean BOIRegisterStatus, Date BOIStartDate, Date BOIExpiryDate, String bankCode, String foreignCompanyDateOfIncorporation, String foreignCompanyCountryOfIncorporation, Date foreignCompanyDateOfCommencement, GroupCompany groupCompanyID, ContactDetails companyContactDetailsID, Director directorID, BankDetails companyBankDetailsID,int blockChainID) {
         this.registrationNumber = registrationNumber;
         this.companyName = companyName;
         this.comTypeID = comTypeID;
@@ -77,5 +78,6 @@ public class Company {
         this.companyContactDetailsID = companyContactDetailsID;
         this.directorID = directorID;
         this.companyBankDetailsID = companyBankDetailsID;
+        this.blockChainID = blockChainID;
     }
 }

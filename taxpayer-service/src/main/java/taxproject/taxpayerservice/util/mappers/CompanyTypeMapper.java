@@ -1,7 +1,7 @@
 package taxproject.taxpayerservice.util.mappers;
 
 import org.mapstruct.Mapper;
-import taxproject.taxpayerservice.dto.RequestAddCompanyTypeDTO;
+import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
 import taxproject.taxpayerservice.entity.CompanyTypes;
 
 @Mapper(componentModel = "spring")
