@@ -50,6 +50,4 @@ public class TaxPayerController {
     ){
         return taxpayerService.getPersonByNIC(nic);
     }
-
-
 }

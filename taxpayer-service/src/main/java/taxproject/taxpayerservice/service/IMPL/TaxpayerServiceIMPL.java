@@ -100,7 +100,6 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
             throw new CompanyRegistrationNumberWrongException();
         }
     }
-
     @Override
     public ResponsePersonForTaxPayingDTO getPersonByNIC(String nic) {
         Person person = personRepo.getPersonByNicEquals(nic);
@@ -116,7 +115,6 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
             throw new PersonNotInDatabaseException();
         }
     }
-
     @Override
     public String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO) {
 
