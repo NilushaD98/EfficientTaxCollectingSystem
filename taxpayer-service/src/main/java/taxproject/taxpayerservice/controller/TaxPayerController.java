@@ -4,9 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.DefaultGasProvider;
+import taxproject.taxpayerservice.config.PersonRegistry;
 import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
+import taxproject.taxpayerservice.dto.request.Test;
 import taxproject.taxpayerservice.dto.response.ResponseCompanyForTaxPayingDTO;
 import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import taxproject.taxpayerservice.service.TaxpayerService;
@@ -49,5 +56,25 @@ public class TaxPayerController {
             @PathVariable(value = "nicNumber") String nic
     ){
         return taxpayerService.getPersonByNIC(nic);
+    }
+    @PostMapping("test")
+    public void Test(@RequestBody Test test) throws Exception {
+        taxpayerService.test(test);
+    }
+    @PostMapping("test2")
+    public void test2() throws Exception {
+        taxpayerService.test2();
+    }
+
+    @GetMapping("/deploy/contract")
+    public void deployContract() throws Exception {
+        String privateKey = "6e81f5778c39f67fa1a334bafd64b7d6ae8373543a03913a112df1ffb972c946";
+        Credentials credentials = Credentials.create(privateKey);
+        Web3j web3j = Web3j.build(new HttpService("https://sepolia.infura.io/v3/88c0c2df599940a4b3131bd5f5d6d965"));
+        ContractGasProvider contractGasProvider = new DefaultGasProvider();
+
+        PersonRegistry personRegistry = PersonRegistry.deploy(web3j,credentials,contractGasProvider).send();
+        System.out.println(personRegistry.getContractAddress());
+
     }
 }

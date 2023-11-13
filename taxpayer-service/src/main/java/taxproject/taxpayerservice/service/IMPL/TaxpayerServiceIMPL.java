@@ -2,9 +2,20 @@ package taxproject.taxpayerservice.service.IMPL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.RemoteFunctionCall;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.tuples.Tuple;
+import org.web3j.tuples.generated.Tuple2;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.DefaultGasProvider;
+import taxproject.taxpayerservice.config.PersonRegistry;
 import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
+import taxproject.taxpayerservice.dto.request.Test;
 import taxproject.taxpayerservice.dto.response.ResponseCompanyForTaxPayingDTO;
 import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import taxproject.taxpayerservice.entity.*;
@@ -34,6 +45,8 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
     private PersonRepo personRepo;
     @Autowired
     private CompanyTypeMapper companyTypeMapper;
+    @Autowired
+    private  Web3j web3j;
 
     private int companyBlockChainID = 0;
     private int personBlockChainID = 0;
@@ -115,6 +128,32 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
             throw new PersonNotInDatabaseException();
         }
     }
+
+    @Override
+    public void test(Test test) throws Exception {
+        String privateKey = "6e81f5778c39f67fa1a334bafd64b7d6ae8373543a03913a112df1ffb972c946";
+        Credentials credentials = Credentials.create(privateKey);
+        Web3j web3j = Web3j.build(new HttpService("https://sepolia.infura.io/v3/88c0c2df599940a4b3131bd5f5d6d965"));
+        ContractGasProvider contractGasProvider = new DefaultGasProvider();
+        PersonRegistry personRegistry = PersonRegistry.load("0x4a3bc68fccb9a49f6423faf20a22800790d6a547",web3j,credentials,contractGasProvider);
+        personRegistry.addPerson(test.getNic(),test.getName()).send();
+
+    }
+
+    @Override
+    public void test2() throws Exception {
+        String privateKey = "6e81f5778c39f67fa1a334bafd64b7d6ae8373543a03913a112df1ffb972c946";
+        Credentials credentials = Credentials.create(privateKey);
+        Web3j web3j = Web3j.build(new HttpService("https://sepolia.infura.io/v3/88c0c2df599940a4b3131bd5f5d6d965"));
+        ContractGasProvider contractGasProvider = new DefaultGasProvider();
+        PersonRegistry personRegistry = PersonRegistry.load("0x4a3bc68fccb9a49f6423faf20a22800790d6a547",web3j,credentials,contractGasProvider);
+        Tuple2<String, String> personByNIC = personRegistry.getPersonByNIC("1234").send();
+        System.out.println(personByNIC.getValue1());
+    }
+    private Test mappinf(Tuple2<String, String> tuple2){
+        return new Test(tuple2.component1(), tuple2.component2());
+    }
+
     @Override
     public String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO) {
 
@@ -191,4 +230,5 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
 
         return companyRepo.save(company).getCompanyName()+" saved.";
     }
+
 }

@@ -3,6 +3,7 @@ package taxproject.taxpayerservice.service;
 import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
+import taxproject.taxpayerservice.dto.request.Test;
 import taxproject.taxpayerservice.dto.response.ResponseCompanyForTaxPayingDTO;
 import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 
@@ -16,4 +17,8 @@ public interface TaxpayerService {
     ResponseCompanyForTaxPayingDTO getCompanyByRegNum(String registerNumber);
 
     ResponsePersonForTaxPayingDTO getPersonByNIC(String nic);
+
+    void test(Test test) throws Exception;
+
+    void test2() throws Exception;
 }

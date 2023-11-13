@@ -84,6 +84,11 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+			<groupId>org.web3j</groupId>
+			<artifactId>core</artifactId>
+			<version>4.9.5</version>
+		</dependency>
     </dependencies>
 	<dependencyManagement>
 		<dependencies>
