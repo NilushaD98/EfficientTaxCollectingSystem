@@ -9,7 +9,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
-import taxproject.taxpayerservice.config.PersonRegistry;
+import taxproject.taxpayerservice.config.TaxPayerRegistry;
 import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
@@ -61,9 +61,9 @@ public class TaxPayerController {
     public void Test(@RequestBody Test test) throws Exception {
         taxpayerService.test(test);
     }
-    @PostMapping("test2")
-    public void test2() throws Exception {
-        taxpayerService.test2();
+    @PostMapping("test2/{nic}")
+    public void test2(@RequestBody Test test) throws Exception {
+        taxpayerService.test2(test.getNic());
     }
 
     @GetMapping("/deploy/contract")
@@ -73,8 +73,7 @@ public class TaxPayerController {
         Web3j web3j = Web3j.build(new HttpService("https://sepolia.infura.io/v3/88c0c2df599940a4b3131bd5f5d6d965"));
         ContractGasProvider contractGasProvider = new DefaultGasProvider();
 
-        PersonRegistry personRegistry = PersonRegistry.deploy(web3j,credentials,contractGasProvider).send();
-        System.out.println(personRegistry.getContractAddress());
-
+        TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.deploy(web3j,credentials,contractGasProvider).send();
+        System.out.println(taxPayerRegistry.getContractAddress());
     }
 }

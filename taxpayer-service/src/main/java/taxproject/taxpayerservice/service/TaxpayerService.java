@@ -20,5 +20,5 @@ public interface TaxpayerService {
 
     void test(Test test) throws Exception;
 
-    void test2() throws Exception;
+    void test2(String  nic) throws Exception;
 }

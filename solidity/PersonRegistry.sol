@@ -56,7 +56,8 @@ contract PersonRegistry {
 
     //for get person details using person's NIC
     function getPersonByNIC(string memory _nic) public view returns (string memory,string memory){
-        for (uint256 i = 0; i < personID.length; i++){
+        uint256 totalPersons = numPerson + 1;
+        for (uint256 i = 0; i < totalPersons; i++){
             if(keccak256(abi.encodePacked(Persons[i].nic)) == keccak256(abi.encodePacked(_nic))){
                 return (Persons[i].nic,Persons[i].nameWithInitials);
             }
@@ -65,13 +66,13 @@ contract PersonRegistry {
     }
     //for get company details using company's RegNum
     function getCompanyByRegistrationNumber(string memory _registrationNumber) public view returns (string memory, string memory) {
-        for (uint256 i = 0; i < companyRegNumber.length; i++) {
+        uint256 totalCompanies = numCompany + 1;
+        for (uint256 i = 0; i < totalCompanies; i++) {
             if (keccak256(abi.encodePacked(Companies[i].registrationNumber)) == keccak256(abi.encodePacked(_registrationNumber))) {
 
                 return (Companies[i].registrationNumber,Companies[i].companyName);
             }
         }
-        require(true,"sdfsdfsdfsdggdhdfghgfh");
         return ("", "");
     }
 
