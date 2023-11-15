@@ -5,13 +5,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5585a168-8c57-4e09-a888-45f169b75c70" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/config/TaxPayerRegistry.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/solidity/TaxPayingService.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/config/TaxPayingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/controller/TaxCreditController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/controller/TaxPayingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/fsdf.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/request/RequestCreditCompanyPaymentDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/request/RequestCreditPersonPaymentDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponseCompanyByBlockchainDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponseCompanyForTaxPayingDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponseCompanyPaymentDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponseCompanyPaymentDetailsDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponsePersonForTaxPayingDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponsePersonPaymentDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/dto/response/ResponsePersonPaymentDetailsDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/entity/TaxCreditInvoiceCompany.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/entity/TaxCreditInvoicePerson.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/exception/BlockChainFetchException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/exception/DataInconsistentException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/exception/SavedErrorException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/proxy/TaxPayerProxy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/repo/TaxCreditInvoiceCompanyRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/repo/TaxCreditInvoicePersonRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/service/IMPL/TaxCreditServiceIMPL.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/service/TaxCreditService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/util/StandardResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/dto/response/ResponseCompanyByBlockchain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/dto/response/ResponsePersonByBlockchainDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/exception/BlockChainFetchException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/exception/SavedErrorException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/solidity/PersonRegistry.sol" beforeDir="false" afterPath="$PROJECT_DIR$/solidity/PersonRegistry.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/config/PersonRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/config/PersonRegistry1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tax-paying-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/tax-paying-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/TaxPayingServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/tax-paying-service/src/main/java/taxproject/taxpayingservice/TaxPayingServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tax-paying-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/tax-paying-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/config/PersonRegistry1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/config/TaxPayerRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/config/TaxPayerRegistry.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/controller/TaxPayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/controller/TaxPayerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/service/IMPL/TaxpayerServiceIMPL.java" beforeDir="false" afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/service/IMPL/TaxpayerServiceIMPL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/service/TaxpayerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/taxpayer-service/src/main/java/taxproject/taxpayerservice/service/TaxpayerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taxpayer-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/taxpayer-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +80,7 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.fileTypes",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -64,7 +98,7 @@
       <option name="presentableId" value="Default" />
       <updated>1697338227412</updated>
       <workItem from="1697338229593" duration="58000" />
-      <workItem from="1699879381485" duration="6813000" />
+      <workItem from="1699879381485" duration="11606000" />
     </task>
     <servers />
   </component>

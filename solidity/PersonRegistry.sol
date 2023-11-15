@@ -29,12 +29,12 @@ contract PersonRegistry {
 
         uint _id = insertPerson(_nic,_nameWithInitials);
         emit PersonAdded(_id, _nic, _nameWithInitials);
+        Persons[1] = Person(_nic,_nameWithInitials);
         return _id;
     }
     //for add company to blockchain
     function addCompany(string memory _registrationNumber, string memory _companyName)public returns (uint){
         uint _cid = insertCompany(_registrationNumber,_companyName);
-
         emit CompanyAdded(_cid, _registrationNumber, _companyName);
         return _cid;
     }

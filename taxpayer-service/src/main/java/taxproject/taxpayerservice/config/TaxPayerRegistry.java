@@ -80,7 +80,6 @@ public class TaxPayerRegistry extends Contract {
     protected TaxPayerRegistry(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
     }
-
     public List<CompanyAddedEventResponse> getCompanyAddedEvents(TransactionReceipt transactionReceipt) {
         List<EventValuesWithLog> valueList = extractEventParametersWithLog(COMPANYADDED_EVENT, transactionReceipt);
         ArrayList<CompanyAddedEventResponse> responses = new ArrayList<CompanyAddedEventResponse>(valueList.size());
@@ -94,7 +93,6 @@ public class TaxPayerRegistry extends Contract {
         }
         return responses;
     }
-
     public Flowable<CompanyAddedEventResponse> companyAddedEventFlowable(EthFilter filter) {
         return web3j.ethLogFlowable(filter).map(new Function<Log, CompanyAddedEventResponse>() {
             @Override
@@ -109,13 +107,11 @@ public class TaxPayerRegistry extends Contract {
             }
         });
     }
-
     public Flowable<CompanyAddedEventResponse> companyAddedEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(COMPANYADDED_EVENT));
         return companyAddedEventFlowable(filter);
     }
-
     public List<PersonAddedEventResponse> getPersonAddedEvents(TransactionReceipt transactionReceipt) {
         List<EventValuesWithLog> valueList = extractEventParametersWithLog(PERSONADDED_EVENT, transactionReceipt);
         ArrayList<PersonAddedEventResponse> responses = new ArrayList<PersonAddedEventResponse>(valueList.size());
@@ -129,7 +125,6 @@ public class TaxPayerRegistry extends Contract {
         }
         return responses;
     }
-
     public Flowable<PersonAddedEventResponse> personAddedEventFlowable(EthFilter filter) {
         return web3j.ethLogFlowable(filter).map(new Function<Log, PersonAddedEventResponse>() {
             @Override
@@ -144,13 +139,11 @@ public class TaxPayerRegistry extends Contract {
             }
         });
     }
-
     public Flowable<PersonAddedEventResponse> personAddedEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(PERSONADDED_EVENT));
         return personAddedEventFlowable(filter);
     }
-
     public RemoteFunctionCall<TransactionReceipt> addCompany(String _registrationNumber, String _companyName) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_ADDCOMPANY, 
@@ -159,7 +152,6 @@ public class TaxPayerRegistry extends Contract {
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
-
     public RemoteFunctionCall<TransactionReceipt> addPerson(String _nic, String _nameWithInitials) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_ADDPERSON, 
@@ -168,7 +160,6 @@ public class TaxPayerRegistry extends Contract {
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
-
     public RemoteFunctionCall<Tuple2<List,List>> getAllCompanies() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_GETALLCOMPANIES,
@@ -188,7 +179,6 @@ public class TaxPayerRegistry extends Contract {
         }
         );
     }
-
     public RemoteFunctionCall<Tuple2<List,List>> getAllPersons() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_GETALLPERSONS,
@@ -208,7 +198,6 @@ public class TaxPayerRegistry extends Contract {
         }
         );
     }
-
     public RemoteFunctionCall<Tuple2<String,String>> getCompanyByRegistrationNumber(String _registrationNumber) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_GETCOMPANYBYREGISTRATIONNUMBER,
@@ -226,7 +215,6 @@ public class TaxPayerRegistry extends Contract {
                     }
                 });
     }
-
     public RemoteFunctionCall<Tuple2<String,String>> getPersonByNIC(String _nic) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_GETPERSONBYNIC,
@@ -245,43 +233,34 @@ public class TaxPayerRegistry extends Contract {
                     }
                 });
     }
-
     @Deprecated
     public static TaxPayerRegistry load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         return new TaxPayerRegistry(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
-
     @Deprecated
     public static TaxPayerRegistry load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         return new TaxPayerRegistry(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
-
     public static TaxPayerRegistry load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
         return new TaxPayerRegistry(contractAddress, web3j, credentials, contractGasProvider);
     }
-
     public static TaxPayerRegistry load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         return new TaxPayerRegistry(contractAddress, web3j, transactionManager, contractGasProvider);
     }
-
     public static RemoteCall<TaxPayerRegistry> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
         return deployRemoteCall(TaxPayerRegistry.class, web3j, credentials, contractGasProvider, BINARY, "");
     }
-
     @Deprecated
     public static RemoteCall<TaxPayerRegistry> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         return deployRemoteCall(TaxPayerRegistry.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
     }
-
     public static RemoteCall<TaxPayerRegistry> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         return deployRemoteCall(TaxPayerRegistry.class, web3j, transactionManager, contractGasProvider, BINARY, "");
     }
-
     @Deprecated
     public static RemoteCall<TaxPayerRegistry> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         return deployRemoteCall(TaxPayerRegistry.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
-
     public static class CompanyAddedEventResponse extends BaseEventResponse {
         public BigInteger cID;
 
@@ -289,7 +268,6 @@ public class TaxPayerRegistry extends Contract {
 
         public String companyName;
     }
-
     public static class PersonAddedEventResponse extends BaseEventResponse {
         public BigInteger personID;
 

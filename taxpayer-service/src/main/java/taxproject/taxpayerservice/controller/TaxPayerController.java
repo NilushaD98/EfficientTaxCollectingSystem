@@ -4,20 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.web3j.crypto.Credentials;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.gas.ContractGasProvider;
-import org.web3j.tx.gas.DefaultGasProvider;
-import taxproject.taxpayerservice.config.TaxPayerRegistry;
 import taxproject.taxpayerservice.dto.request.RequestAddCompanyTypeDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerCompanyDTO;
 import taxproject.taxpayerservice.dto.request.RequestAddNewTaxpayerPersonDTO;
 import taxproject.taxpayerservice.dto.request.Test;
+import taxproject.taxpayerservice.dto.response.ResponseCompanyByBlockchain;
 import taxproject.taxpayerservice.dto.response.ResponseCompanyForTaxPayingDTO;
 import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import taxproject.taxpayerservice.service.TaxpayerService;
 import taxproject.taxpayerservice.util.StandardResponse;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/tax_payer/")
@@ -39,23 +36,36 @@ public class TaxPayerController {
         );
     }
     @PostMapping("register_new_person")
-    public ResponseEntity<StandardResponse> registerNewPerson(@RequestBody RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO){
+    public ResponseEntity<StandardResponse> registerNewPerson(@RequestBody RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO) throws Exception {
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(201,"Person Register Status",taxpayerService.registerNewPerson(requestAddNewTaxpayerPersonDTO)),HttpStatus.ACCEPTED
         );
     }
-    @GetMapping("get_compnay_by_register_number_for_tax_paying/{registerNumber}")
+    @GetMapping("get_company_by_register_number_for_tax_paying")
     public ResponseCompanyForTaxPayingDTO getCompanyByRegisterNumber(
-            @PathVariable (value = "registerNumber") String registerNumber
-    ){
+            @RequestParam(value = "registerNumber") String registerNumber
+    ) throws Exception {
         return taxpayerService.getCompanyByRegNum(registerNumber);
     }
 
-    @GetMapping("get_person_by_nicr_for_tax_paying/{nicNumber}")
+    @GetMapping("get_person_by_nic_for_tax_paying")
     public ResponsePersonForTaxPayingDTO getPersonByNIC(
-            @PathVariable(value = "nicNumber") String nic
+            @RequestParam(value = "nicNumber") String nic
     ){
         return taxpayerService.getPersonByNIC(nic);
+    }
+    @GetMapping("get_all_persons")
+    public ResponseEntity<StandardResponse> getAllPersons(){
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"All Persons from BlockChain : ",taxpayerService.getAllPersons()),HttpStatus.ACCEPTED
+        );
+    }
+    @GetMapping("get_all_companies")
+    public ResponseEntity<StandardResponse> getAllCompanies(){
+        List<ResponseCompanyByBlockchain> companyByBlockchainList = taxpayerService.getAllCompanies();
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"All Companies from Blockchain : ",companyByBlockchainList),HttpStatus.ACCEPTED
+        );
     }
     @PostMapping("test")
     public void Test(@RequestBody Test test) throws Exception {
@@ -65,15 +75,8 @@ public class TaxPayerController {
     public void test2(@RequestBody Test test) throws Exception {
         taxpayerService.test2(test.getNic());
     }
-
-    @GetMapping("/deploy/contract")
-    public void deployContract() throws Exception {
-        String privateKey = "6e81f5778c39f67fa1a334bafd64b7d6ae8373543a03913a112df1ffb972c946";
-        Credentials credentials = Credentials.create(privateKey);
-        Web3j web3j = Web3j.build(new HttpService("https://sepolia.infura.io/v3/88c0c2df599940a4b3131bd5f5d6d965"));
-        ContractGasProvider contractGasProvider = new DefaultGasProvider();
-
-        TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.deploy(web3j,credentials,contractGasProvider).send();
-        System.out.println(taxPayerRegistry.getContractAddress());
+    @GetMapping("deploy")
+    public void deployContract(){
+        taxpayerService.deployContract();
     }
 }
