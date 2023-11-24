@@ -12,4 +12,5 @@ public class ResponseUserAuthDetailsDTO {
     private String username;
     private String password;
     private String job_title;
+    private String privateKey;
 }

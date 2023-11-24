@@ -36,6 +36,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class TaxCreditServiceIMPL implements TaxCreditService {
@@ -46,17 +54,20 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
     private TaxCreditInvoicePersonRepo taxCreditInvoicePersonRepo;
     @Autowired
     private TaxPayerProxy taxPayerProxy;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     private String contractAddress = "0x60446acf5baeb2a151fd03e68a63568d7a6bfaab";
     @Value("${taxpayerregistry.contract.testneturl}")
     private String testNetURL;
-    @Value("${taxpayerregistry.contract.privatekey}")
-    private String privateKey;
-    private TaxPayingService taxPayingService;
+    private static final String ALGORITHM = "AES";
+    private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    private static final String SECRET_KEY = "YourSecretKey123";
+
     @Override
-    public ResponsePersonPaymentDTO creditPersonPayment(RequestCreditPersonPaymentDTO requestCreditPersonPaymentDTO) {
+    public ResponsePersonPaymentDTO creditPersonPayment(RequestCreditPersonPaymentDTO requestCreditPersonPaymentDTO,String encryptedToken) {
         //save data in blockchain
-        ResponsePersonForTaxPayingDTO personByNIC = taxPayerProxy.getPersonByNIC(requestCreditPersonPaymentDTO.getPayersNIC());
+        ResponsePersonForTaxPayingDTO personByNIC = taxPayerProxy.getPersonByNIC(requestCreditPersonPaymentDTO.getPayersNIC(),encryptedToken);
         if(
                 (personByNIC.getPersonID() == requestCreditPersonPaymentDTO.getTaxPayerRegistrationNumber())
                 && (personByNIC.getNic().equals(requestCreditPersonPaymentDTO.getPayersNIC()))
@@ -76,6 +87,10 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
                     date
             );
             try{
+                Credentials credentials = Credentials.create(jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+                Web3j web3j = Web3j.build(new HttpService(testNetURL));
+                ContractGasProvider contractGasProvider = new DefaultGasProvider();
+                TaxPayingService taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
                 TransactionReceipt send = taxPayingService.creditPersonPayment(
                         BigInteger.valueOf(requestCreditPersonPaymentDTO.getTaxPayerRegistrationNumber()),
                         ("TPAEXR" + requestCreditPersonPaymentDTO.getPayersNIC() + "PAY" + date),
@@ -116,8 +131,8 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
         }
     }
     @Override
-    public ResponseCompanyPaymentDTO creditCompanyPayment(RequestCreditCompanyPaymentDTO requestCreditCompanyPaymentDTO) {
-        ResponseCompanyForTaxPayingDTO companyByRegisterNumber = taxPayerProxy.getCompanyByRegisterNumber(requestCreditCompanyPaymentDTO.getCompanyRegistrationNumber());
+    public ResponseCompanyPaymentDTO creditCompanyPayment(RequestCreditCompanyPaymentDTO requestCreditCompanyPaymentDTO,String encryptedToken) {
+        ResponseCompanyForTaxPayingDTO companyByRegisterNumber = taxPayerProxy.getCompanyByRegisterNumber(requestCreditCompanyPaymentDTO.getCompanyRegistrationNumber(),encryptedToken);
         if(
                 (companyByRegisterNumber.getCompanyID() ==  requestCreditCompanyPaymentDTO.getTaxPayerRegistrationNumber())
                 && (companyByRegisterNumber.getRegistrationNumber().equals(requestCreditCompanyPaymentDTO.getCompanyRegistrationNumber()))
@@ -138,6 +153,10 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
             );
             taxCreditInvoiceCompanyRepo.save(taxCreditInvoiceCompany);
             try{
+                Credentials credentials = Credentials.create(jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+                Web3j web3j = Web3j.build(new HttpService(testNetURL));
+                ContractGasProvider contractGasProvider = new DefaultGasProvider();
+                TaxPayingService taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
                 TransactionReceipt send = taxPayingService.creditCompanyPayment(
                         BigInteger.valueOf(requestCreditCompanyPaymentDTO.getTaxPayerRegistrationNumber()),
                         ("TCAOXM" + requestCreditCompanyPaymentDTO.getCompanyRegistrationNumber() + "PAY" + date),
@@ -178,8 +197,12 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
         }
     }
     @Override
-    public List<ResponsePersonPaymentDetailsDTO> getAllPaymentDetailsByNIC(String nic) {
+    public List<ResponsePersonPaymentDetailsDTO> getAllPaymentDetailsByNIC(String nic,String encryptedToken) {
         try {
+            Credentials credentials = Credentials.create(jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayingService taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
             Tuple6<List, List, List, List, List, List> send = taxPayingService.getAllPaymentDetailsByNIC(nic).send();
             List<Utf8String> invoiceNumbers = send.getValue1();
             List<Utf8String> payeesNICs = send.getValue2();
@@ -205,9 +228,12 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
         }
     }
     @Override
-    public List<ResponseCompanyPaymentDetailsDTO> getAllPaymentDetailsByRegNumber(String regNumber) {
+    public List<ResponseCompanyPaymentDetailsDTO> getAllPaymentDetailsByRegNumber(String regNumber,String encryptedToken) {
         try {
-            System.out.println(3);
+            Credentials credentials = Credentials.create(jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayingService taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
             Tuple6<List, List, List, List, List, List> send = taxPayingService.getAllPaymentDetailsByRegNumber(regNumber).send();
             System.out.println(send);
             List<Utf8String> invoiceNumbers = send.getValue1();
@@ -242,7 +268,7 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
     @Override
     public void deployContract() {
         try {
-            Credentials credentials = Credentials.create(privateKey);
+            Credentials credentials = Credentials.create("privateKey");
             Web3j web3j = Web3j.build(new HttpService(testNetURL));
             ContractGasProvider contractGasProvider = new DefaultGasProvider();
             TaxPayingService taxPayingService = TaxPayingService.deploy(web3j,credentials,contractGasProvider).send();
@@ -252,15 +278,42 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
             log.error(e.getMessage());
         }
     }
-    @Bean
-    private void loadContract(){
+
+//    private void loadContract(){
+//        try {
+//            Credentials credentials = Credentials.create(privateKey);
+//            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+//            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+//            taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//        }
+//    }
+    private static String decrypt(String ciphertext) {
+
         try {
-            Credentials credentials = Credentials.create(privateKey);
-            Web3j web3j = Web3j.build(new HttpService(testNetURL));
-            ContractGasProvider contractGasProvider = new DefaultGasProvider();
-            taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
-        }catch (Exception e){
-            log.error(e.getMessage());
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+            SecretKey secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
+
+            // Decode Base64
+            byte[] combined = Base64.getDecoder().decode(ciphertext);
+
+            // Extract IV and encrypted data
+            byte[] iv = new byte[16]; // Assuming 16 bytes IV for AES
+            System.arraycopy(combined, 0, iv, 0, iv.length);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+
+            byte[] encryptedBytes = new byte[combined.length - iv.length];
+            System.arraycopy(combined, iv.length, encryptedBytes, 0, encryptedBytes.length);
+
+            // Decrypt the ciphertext
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

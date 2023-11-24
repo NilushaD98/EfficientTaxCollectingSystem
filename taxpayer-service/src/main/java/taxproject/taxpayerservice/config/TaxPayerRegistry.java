@@ -150,6 +150,7 @@ public class TaxPayerRegistry extends Contract {
                 Arrays.<Type>asList(new Utf8String(_registrationNumber),
                 new Utf8String(_companyName)),
                 Collections.<TypeReference<?>>emptyList());
+        System.out.println("3");
         return executeRemoteCallTransaction(function);
     }
     public RemoteFunctionCall<TransactionReceipt> addPerson(String _nic, String _nameWithInitials) {

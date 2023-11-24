@@ -12,23 +12,23 @@ import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import java.util.List;
 
 public interface TaxpayerService {
-    String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO);
+    String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO ,String encryptedToken);
 
-    String addNewCompanyType(RequestAddCompanyTypeDTO requestAddCompanyTypeDTO);
+    String addNewCompanyType(RequestAddCompanyTypeDTO requestAddCompanyTypeDTO,String encryptedToken);
 
-    String registerNewPerson(RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO) throws Exception;
+    String registerNewPerson(RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO,String encryptedToken) throws Exception;
 
-    ResponseCompanyForTaxPayingDTO getCompanyByRegNum(String registerNumber) throws Exception;
+    ResponseCompanyForTaxPayingDTO getCompanyByRegNum(String registerNumber,String encryptedToken) throws Exception;
 
-    ResponsePersonForTaxPayingDTO getPersonByNIC(String nic);
+    ResponsePersonForTaxPayingDTO getPersonByNIC(String nic,String encryptedToken);
 
     void test(Test test) throws Exception;
 
     void test2(String  nic) throws Exception;
 
-    List<ResponsePersonByBlockchainDTO> getAllPersons();
+    List<ResponsePersonByBlockchainDTO> getAllPersons(String encryptedToken);
 
-    List<ResponseCompanyByBlockchain> getAllCompanies();
+    List<ResponseCompanyByBlockchain> getAllCompanies(String encryptedToken);
 
     void deployContract();
 }

@@ -10,7 +10,7 @@ import taxproject.userservice.dto.response.ResponseUserAuthDetailsDTO;
 import java.util.List;
 
 public interface UserService {
-    ResponseUserAuthDetailsDTO findUserByUserName(String username);
+    ResponseUserAuthDetailsDTO findUserByUserName(String username,String walletaddress);
 
     String addEmployee(RequestAddEmployee requestAddEmployee);
 

@@ -10,13 +10,13 @@ import taxproject.taxpayingservice.dto.response.ResponsePersonPaymentDetailsDTO;
 import java.util.List;
 
 public interface TaxCreditService {
-    ResponsePersonPaymentDTO creditPersonPayment(RequestCreditPersonPaymentDTO requestCreditPersonPaymentDTO);
+    ResponsePersonPaymentDTO creditPersonPayment(RequestCreditPersonPaymentDTO requestCreditPersonPaymentDTO,String encryptedToken);
 
-    ResponseCompanyPaymentDTO creditCompanyPayment(RequestCreditCompanyPaymentDTO requestCreditCompanyPaymentDTO);
+    ResponseCompanyPaymentDTO creditCompanyPayment(RequestCreditCompanyPaymentDTO requestCreditCompanyPaymentDTO,String encryptedToken);
 
-    List<ResponsePersonPaymentDetailsDTO> getAllPaymentDetailsByNIC(String nic);
+    List<ResponsePersonPaymentDetailsDTO> getAllPaymentDetailsByNIC(String nic,String encryptedToken);
 
-    List<ResponseCompanyPaymentDetailsDTO> getAllPaymentDetailsByRegNumber(String regNumber);
+    List<ResponseCompanyPaymentDetailsDTO> getAllPaymentDetailsByRegNumber(String regNumber,String encryptedToken);
 
     void deployContract();
 }

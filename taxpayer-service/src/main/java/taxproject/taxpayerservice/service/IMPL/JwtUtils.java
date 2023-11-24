@@ -1,28 +1,21 @@
-package tax_project.authenticationservice.service;
+package taxproject.taxpayerservice.service.IMPL;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-
-import org.springframework.stereotype.Service;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
-import tax_project.authenticationservice.exceptions.JwtTokenMalformedException;
-import tax_project.authenticationservice.exceptions.JwtTokenMissingException;
+import org.springframework.stereotype.Service;
+import taxproject.taxpayerservice.exception.JwtTokenMalformedException;
+import taxproject.taxpayerservice.exception.JwtTokenMissingException;
+
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 @Service
 public class JwtUtils {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.token.validity}")
+    @Value("${jwt.token.validity}00")
     private long tokenValidity;
     private Key key;
 

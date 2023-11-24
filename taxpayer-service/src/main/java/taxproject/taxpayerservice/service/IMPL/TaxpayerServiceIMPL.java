@@ -1,5 +1,6 @@
 package taxproject.taxpayerservice.service.IMPL;
 
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.abi.datatypes.Utf8String;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,12 @@ import taxproject.taxpayerservice.repo.*;
 import taxproject.taxpayerservice.service.TaxpayerService;
 import taxproject.taxpayerservice.util.mappers.CompanyTypeMapper;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,21 +64,26 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
     private CompanyTypeMapper companyTypeMapper;
     @Autowired
     private  Web3j web3j;
+    @Autowired
+    private JwtUtils jwtUtils;
 
-    private TaxPayerRegistry taxPayerRegistry;
+    private static final String ALGORITHM = "AES";
+    private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    private static final String SECRET_KEY = "YourSecretKey123";
     private String contractAddress = "0x4f10e41941dd394c826a38e177f2dbcdab4f7336";
     @Value("${taxpayerregistry.contract.testneturl}")
     private String testNetURL;
-    @Value("${taxpayerregistry.contract.privatekey}")
+
     private String privateKey;
     private int companyBlockChainID = 0;
     private int personBlockChainID = 0;
     @Override
-    public String addNewCompanyType(RequestAddCompanyTypeDTO requestAddCompanyTypeDTO) {
+    public String addNewCompanyType(RequestAddCompanyTypeDTO requestAddCompanyTypeDTO,String encryptedToken) {
+
         return companyTypeRepo.save(companyTypeMapper.DTOToEntity(requestAddCompanyTypeDTO)).getCompanyType() +" saved successfully.";
     }
     @Override
-    public String registerNewPerson(RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO) throws Exception {
+    public String registerNewPerson(RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO, String encryptedToken) throws Exception {
         BankDetails bankDetails = new BankDetails(
                 requestAddNewTaxpayerPersonDTO.getBankName(),
                 requestAddNewTaxpayerPersonDTO.getAccountNumber()
@@ -112,6 +123,10 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
         //register the person in blockchain
         try {
             personRepo.save(person);
+            Credentials credentials = Credentials.create( jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             TransactionReceipt send = taxPayerRegistry.addPerson(requestAddNewTaxpayerPersonDTO.getNic(), requestAddNewTaxpayerPersonDTO.getNameWithInitials()).send();
             if(send.getStatus().equals("0x1")){
                 return person.getNameWithInitials() +" saved.";
@@ -124,7 +139,7 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
         }
     }
     @Override
-    public String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO) {
+    public String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO,String encryptedToken) {
 
         Director director = new Director(
                 requestAddNewTaxpayerCompanyDTO.getNICOrPassportNo(),
@@ -198,7 +213,12 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
         // register the company in blockchain
         try {
             companyRepo.save(company);
+            Credentials credentials = Credentials.create( jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             TransactionReceipt send = taxPayerRegistry.addCompany(requestAddNewTaxpayerCompanyDTO.getRegistrationNumber(), requestAddNewTaxpayerCompanyDTO.getCompanyName()).send();
+            System.out.println(send);
             if(send.getStatus().equals("0x1")){
                 return company.getCompanyName() +" saved.";
             }else {
@@ -211,8 +231,12 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
     }
 
     @Override
-    public ResponseCompanyForTaxPayingDTO getCompanyByRegNum(String registerNumber) throws Exception {
+    public ResponseCompanyForTaxPayingDTO getCompanyByRegNum(String registerNumber,String encryptedToken) throws Exception {
         try {
+            Credentials credentials = Credentials.create( jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             Tuple2<String, String> send = taxPayerRegistry.getCompanyByRegistrationNumber(registerNumber).send();
             if(send.getValue1() != null){
                 Company company = companyRepo.getCompaniesByRegistrationNumberEquals(registerNumber);
@@ -235,8 +259,12 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
         }
     }
     @Override
-    public ResponsePersonForTaxPayingDTO getPersonByNIC(String nic) {
+    public ResponsePersonForTaxPayingDTO getPersonByNIC(String nic,String encryptedToken) {
         try {
+            Credentials credentials = Credentials.create( jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             Tuple2<String, String> send = taxPayerRegistry.getPersonByNIC(nic).send();
             if(send.getValue1() != null){
                 Person person = personRepo.getPersonByNicEquals(nic);
@@ -260,24 +288,29 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
     }
     @Override
     public void test(Test test) throws Exception {
-        taxPayerRegistry.addPerson(test.getNic(),test.getName()).send();
-        taxPayerRegistry.addCompany(test.getNic(),test.getName()).send();
+//        TaxPayerRegistry taxPayerRegistry = loadContract("bER9lo6u9RM690rKS58MHY8HPdBnoNNfYWq9X80eGalRnOypPKjp4FCFrfT8F8Mr8plPAOAF/xh/psypUg8yyAc8DzHz0mDQ6nN7qu3uzFNhue+9ntCNqOrZYf0DYxBBbLsEhJvT+2/kD5M6VgQ7bAVBR0I7RpSvHQSAB0q3A/ydG1OMJtfkvA8wgEGnD8o+mgyO+VPQzWAMzjjkGpc+UeAQd1XhR4w+tmTagvxXTMLUXdhYW4Gg3Sv83LPiDQ5GH0Jh2/jny0VsDLcMIARhxYX4SUnMQT2dru4VVeyrcvaT2rUlwhbyFdDXAN6rCn/nNNpqjG6+Zx0FdPxXNa+AcxrDRTbZR/ipE4iAIL0hMefXeVacdKBCerMs0do7wjH0I8FQxVyrwm4C4Vvm2Ju6lvvHDUTE8U0oDNCXv9hfpcPBJzWrrYmttFEvvhCIU/Xv");
+//        taxPayerRegistry.addPerson(test.getNic(),test.getName()).send();
+//        taxPayerRegistry.addCompany(test.getNic(),test.getName()).send();
     }
     @Override
     public void test2(String nic) throws Exception {
-        Tuple2<String, String> personByNIC = taxPayerRegistry.getPersonByNIC(nic).send();
-        System.out.println("1."+personByNIC.getValue1()+" "+personByNIC.getValue2());
-        Tuple2<String, String> send1 = taxPayerRegistry.getCompanyByRegistrationNumber(nic).send();
-        System.out.println("2."+send1.getValue1()+" "+send1.getValue2());
-        Tuple2<List, List> send = taxPayerRegistry.getAllPersons().send();
-        System.out.println("1."+send);
-        Tuple2<List, List> send2 = taxPayerRegistry.getAllCompanies().send();
-        System.out.println("2."+send2);
+//        Tuple2<String, String> personByNIC = taxPayerRegistry.getPersonByNIC(nic).send();
+//        System.out.println("1."+personByNIC.getValue1()+" "+personByNIC.getValue2());
+//        Tuple2<String, String> send1 = taxPayerRegistry.getCompanyByRegistrationNumber(nic).send();
+//        System.out.println("2."+send1.getValue1()+" "+send1.getValue2());
+//        Tuple2<List, List> send = taxPayerRegistry.getAllPersons().send();
+//        System.out.println("1."+send);
+//        Tuple2<List, List> send2 = taxPayerRegistry.getAllCompanies().send();
+//        System.out.println("2."+send2);
 
     }
     @Override
-    public List<ResponsePersonByBlockchainDTO> getAllPersons() {
+    public List<ResponsePersonByBlockchainDTO> getAllPersons(String encryptedToken) {
         try {
+            Credentials credentials = Credentials.create( jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             Tuple2<List, List> send = taxPayerRegistry.getAllPersons().send();
             List<Utf8String> nicList = send.component1();
             List<Utf8String> nameWithInitialsList = send.component2();
@@ -295,8 +328,12 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
         }
     }
     @Override
-    public List<ResponseCompanyByBlockchain> getAllCompanies() {
+    public List<ResponseCompanyByBlockchain> getAllCompanies(String encryptedToken) {
         try {
+            Credentials credentials = Credentials.create( jwtUtils.getClaims(decrypt(encryptedToken)).get("pkey", String.class));
+            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             Tuple2<List, List> send = taxPayerRegistry.getAllCompanies().send();
             List<Utf8String> regNumList = send.getValue1();
             List<Utf8String> companyNameList = send.getValue2();
@@ -313,28 +350,58 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
             throw new BlockChainFetchException();
         }
     }
-    @Bean
-    private void loadContract(){
-        try {
-            Credentials credentials = Credentials.create(privateKey);
-            Web3j web3j = Web3j.build(new HttpService(testNetURL));
-            ContractGasProvider contractGasProvider = new DefaultGasProvider();
-            taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
-        }catch (Exception e){
-            log.error(e.getMessage());
-        }
-    }
+
+//    private TaxPayerRegistry loadContract(String encryptedToken){
+//        try {
+//            Credentials credentials = Credentials.create("3ffab34a425107f0cd77f179ae370d71bda548c04954e419bd04bb412d1fd5fb");
+//            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+//            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+//            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
+//            return taxPayerRegistry;
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//            throw new BlockChainFetchException();
+//        }
+//    }
     @Override
     public void deployContract() {
+//        try {
+//            Credentials credentials = Credentials.create("3ffab34a425107f0cd77f179ae370d71bda548c04954e419bd04bb412d1fd5fb");
+//            Web3j web3j = Web3j.build(new HttpService(testNetURL));
+//            ContractGasProvider contractGasProvider = new DefaultGasProvider();
+//            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.deploy(web3j,credentials,contractGasProvider).send();
+//            contractAddress = taxPayerRegistry.getContractAddress();
+//            System.out.println(contractAddress);
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//        }
+    }
+
+    private static String decrypt(String ciphertext) {
+
         try {
-            Credentials credentials = Credentials.create(privateKey);
-            Web3j web3j = Web3j.build(new HttpService(testNetURL));
-            ContractGasProvider contractGasProvider = new DefaultGasProvider();
-            TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.deploy(web3j,credentials,contractGasProvider).send();
-            contractAddress = taxPayerRegistry.getContractAddress();
-            System.out.println(contractAddress);
-        }catch (Exception e){
-            log.error(e.getMessage());
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+            SecretKey secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
+
+            // Decode Base64
+            byte[] combined = Base64.getDecoder().decode(ciphertext);
+
+            // Extract IV and encrypted data
+            byte[] iv = new byte[16]; // Assuming 16 bytes IV for AES
+            System.arraycopy(combined, 0, iv, 0, iv.length);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+
+            byte[] encryptedBytes = new byte[combined.length - iv.length];
+            System.arraycopy(combined, iv.length, encryptedBytes, 0, encryptedBytes.length);
+
+            // Decrypt the ciphertext
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

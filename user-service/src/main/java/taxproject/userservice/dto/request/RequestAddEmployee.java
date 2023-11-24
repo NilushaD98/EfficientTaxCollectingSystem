@@ -27,5 +27,7 @@ public class RequestAddEmployee {
     private String username;
     private String password;
     private String job_title;
+    private String walletAddress;
+    private String privateKey;
 
 }

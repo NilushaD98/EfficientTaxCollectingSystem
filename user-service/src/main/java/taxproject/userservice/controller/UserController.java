@@ -14,6 +14,8 @@ import taxproject.userservice.dto.response.ResponseUserAuthDetailsDTO;
 import taxproject.userservice.service.UserService;
 import taxproject.userservice.util.StandardResponse;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -23,13 +25,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path = "findUserByUserName/{username}")
+    @GetMapping(path = "findUserByUserName/{username}/{walletaddress}")
     public ResponseUserAuthDetailsDTO getUserByUserName(
-            @PathVariable(name = "username") String username
+            @PathVariable(name = "username") String username,
+            @PathVariable(name = "walletaddress") String walletAddress
+
     ){
-        System.out.println(username);
-        ResponseUserAuthDetailsDTO responseUserAuthDetailsDTO = userService.findUserByUserName(username);
-        System.out.println(responseUserAuthDetailsDTO);
+        System.out.println(username+walletAddress);
+        ResponseUserAuthDetailsDTO responseUserAuthDetailsDTO = userService.findUserByUserName(username,walletAddress);
         return responseUserAuthDetailsDTO;
     }
     @PostMapping(path = "addEmployee")

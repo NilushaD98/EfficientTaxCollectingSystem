@@ -3,7 +3,7 @@ package taxproject.userservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import taxproject.userservice.dto.enu.Roles;
+
 
 import javax.persistence.*;
 import java.util.Date;
@@ -51,7 +51,7 @@ public class Employee {
     @Column(nullable = false)
     private Date date_of_appointment;
 
-    @OneToOne(mappedBy = "emp_Id")
+    @OneToOne(mappedBy = "empId")
     private UserDetails userDetails;
 
     public Employee(String nic, String name_with_initials, String first_name, String middle_name, String last_name, String email, String contact, String gender, String address, Date date_of_birth, Date date_of_appointment) {

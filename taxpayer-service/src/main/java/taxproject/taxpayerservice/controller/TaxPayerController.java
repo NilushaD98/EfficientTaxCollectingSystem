@@ -14,6 +14,7 @@ import taxproject.taxpayerservice.dto.response.ResponsePersonForTaxPayingDTO;
 import taxproject.taxpayerservice.service.TaxpayerService;
 import taxproject.taxpayerservice.util.StandardResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -24,45 +25,45 @@ public class TaxPayerController {
     private TaxpayerService taxpayerService;
 
     @PostMapping("add_new_company_type")
-    public ResponseEntity<StandardResponse> addNewCompanyType(@RequestBody RequestAddCompanyTypeDTO requestAddCompanyTypeDTO){
+    public ResponseEntity<StandardResponse> addNewCompanyType(@RequestBody RequestAddCompanyTypeDTO requestAddCompanyTypeDTO ,HttpServletRequest request){
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Company Type Saved Status : ",taxpayerService.addNewCompanyType(requestAddCompanyTypeDTO)),HttpStatus.ACCEPTED
+                new StandardResponse(201,"Company Type Saved Status : ",taxpayerService.addNewCompanyType(requestAddCompanyTypeDTO,request.getHeader("Authorization"))),HttpStatus.ACCEPTED
         );
     }
     @PostMapping("register_new_company")
-    public ResponseEntity<StandardResponse> registerNewCompany(@RequestBody RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO){
+    public ResponseEntity<StandardResponse> registerNewCompany(@RequestBody RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO,HttpServletRequest request){
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Company Register Status : ",taxpayerService.registerNewCompany(requestAddNewTaxpayerCompanyDTO)), HttpStatus.ACCEPTED
+                new StandardResponse(201,"Company Register Status : ",taxpayerService.registerNewCompany(requestAddNewTaxpayerCompanyDTO,request.getHeader("Authorization"))), HttpStatus.ACCEPTED
         );
     }
     @PostMapping("register_new_person")
-    public ResponseEntity<StandardResponse> registerNewPerson(@RequestBody RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO) throws Exception {
+    public ResponseEntity<StandardResponse> registerNewPerson(@RequestBody RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO,HttpServletRequest request) throws Exception {
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Person Register Status",taxpayerService.registerNewPerson(requestAddNewTaxpayerPersonDTO)),HttpStatus.ACCEPTED
+                new StandardResponse(201,"Person Register Status",taxpayerService.registerNewPerson(requestAddNewTaxpayerPersonDTO,request.getHeader("Authorization"))),HttpStatus.ACCEPTED
         );
     }
     @GetMapping("get_company_by_register_number_for_tax_paying")
     public ResponseCompanyForTaxPayingDTO getCompanyByRegisterNumber(
-            @RequestParam(value = "registerNumber") String registerNumber
+            @RequestParam(value = "registerNumber") String registerNumber,HttpServletRequest request
     ) throws Exception {
-        return taxpayerService.getCompanyByRegNum(registerNumber);
+        return taxpayerService.getCompanyByRegNum(registerNumber,request.getHeader("Authorization"));
     }
 
     @GetMapping("get_person_by_nic_for_tax_paying")
     public ResponsePersonForTaxPayingDTO getPersonByNIC(
-            @RequestParam(value = "nicNumber") String nic
+            @RequestParam(value = "nicNumber") String nic,HttpServletRequest request
     ){
-        return taxpayerService.getPersonByNIC(nic);
+        return taxpayerService.getPersonByNIC(nic,request.getHeader("Authorization"));
     }
     @GetMapping("get_all_persons")
-    public ResponseEntity<StandardResponse> getAllPersons(){
+    public ResponseEntity<StandardResponse> getAllPersons(HttpServletRequest request){
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(200,"All Persons from BlockChain : ",taxpayerService.getAllPersons()),HttpStatus.ACCEPTED
+                new StandardResponse(200,"All Persons from BlockChain : ",taxpayerService.getAllPersons(request.getHeader("Authorization"))),HttpStatus.ACCEPTED
         );
     }
     @GetMapping("get_all_companies")
-    public ResponseEntity<StandardResponse> getAllCompanies(){
-        List<ResponseCompanyByBlockchain> companyByBlockchainList = taxpayerService.getAllCompanies();
+    public ResponseEntity<StandardResponse> getAllCompanies(HttpServletRequest request){
+        List<ResponseCompanyByBlockchain> companyByBlockchainList = taxpayerService.getAllCompanies(request.getHeader("Authorization"));
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"All Companies from Blockchain : ",companyByBlockchainList),HttpStatus.ACCEPTED
         );

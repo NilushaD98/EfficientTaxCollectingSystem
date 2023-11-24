@@ -22,14 +22,21 @@ public class UserDetails {
     private String password;
     @Column(nullable = false)
     private String job_title;
+    @Column(nullable = false)
+    private String walletAddress;
+    @Column(nullable = false)
+    private String privateKey;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emp_Id")
-    private Employee emp_Id;
+    @JoinColumn(name = "empId")
+    private Employee empId;
 
-    public UserDetails(String username, String password, String job_title, Employee emp_Id) {
+
+    public UserDetails(String username, String password, String job_title, String walletAddress, String privateKey, Employee empId) {
         this.username = username;
         this.password = password;
         this.job_title = job_title;
-        this.emp_Id = emp_Id;
+        this.walletAddress = walletAddress;
+        this.privateKey = privateKey;
+        this.empId = empId;
     }
 }

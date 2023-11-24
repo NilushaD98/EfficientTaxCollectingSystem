@@ -36,9 +36,9 @@ public class UserServiceIMPL implements UserService {
     private RemoveEmployeeRepo removeEmployeeRepo;
 
     @Override
-    public ResponseUserAuthDetailsDTO findUserByUserName(String username) {
-        UserDetails userDetails = userDetailsRepo.findByUsernameEquals(username);
-        return new ResponseUserAuthDetailsDTO(userDetails.getUsername(),userDetails.getPassword(),userDetails.getJob_title());
+    public ResponseUserAuthDetailsDTO findUserByUserName(String username,String walletaddress) {
+        UserDetails userDetails = userDetailsRepo.findByUsernameEqualsAndWalletAddressEquals(username,walletaddress);
+        return new ResponseUserAuthDetailsDTO(userDetails.getUsername(),userDetails.getPassword(),userDetails.getJob_title(),userDetails.getPrivateKey());
     }
     @Override
     public String addEmployee(RequestAddEmployee requestAddEmployee) {
@@ -61,6 +61,8 @@ public class UserServiceIMPL implements UserService {
                     requestAddEmployee.getUsername(),
                     BCrypt.hashpw(requestAddEmployee.getPassword(),BCrypt.gensalt()),
                     requestAddEmployee.getJob_title(),
+                    requestAddEmployee.getWalletAddress(),
+                    requestAddEmployee.getPrivateKey(),
                     employee
             );
             userDetailsRepo.save(userDetails);
@@ -125,7 +127,7 @@ public class UserServiceIMPL implements UserService {
     @Override
     public String updateEmployeePassword(RequestUserPasswordDTO requestUserPasswordDTO) {
         if(employeeRepo.existsById(requestUserPasswordDTO.getUserID())){
-            UserDetails userDetails = userDetailsRepo.findByEmp_IdEquals(requestUserPasswordDTO.getUserID());
+            UserDetails userDetails = userDetailsRepo.findByEmpIdEquals(requestUserPasswordDTO.getUserID());
             if(BCrypt.checkpw(requestUserPasswordDTO.getCurrentPassword(),userDetails.getPassword())){
                 userDetails.setPassword(BCrypt.hashpw(requestUserPasswordDTO.getNewPassword(),BCrypt.gensalt()));
                 userDetailsRepo.save(userDetails);
