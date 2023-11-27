@@ -19,10 +19,10 @@ public class RequestAddNewTaxpayerCompanyDTO {
     private String contact;
     private String companyEmail;
     private String websiteURL;
-    private Boolean BOIRegisterStatus;
-    private Date BOIStartDate;
-    private Date BOIExpiryDate;
-    private String BankCode;
+    private Boolean boiRegisterStatus;
+    private Date boiStartDate;
+    private Date boiExpiryDate;
+    private String bankCode;
     private String foreignCompanyDateOfIncorporation;
     private String foreignCompanyCountryOfIncorporation;
     private Date foreignCompanyDateOfCommencement;
@@ -47,8 +47,8 @@ public class RequestAddNewTaxpayerCompanyDTO {
     private String email;
     private String nameOfContactPerson;
     //director details
-    private String NICOrPassportNo;
-    private String IssuanceCountryOfPassport;
+    private String nicOrPassportNo;
+    private String issuanceCountryOfPassport;
     private String fullName;
     private String nameWithInitials;
     private Date dateOfBirth;

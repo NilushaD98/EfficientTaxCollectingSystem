@@ -279,37 +279,23 @@ public class TaxPayingService extends Contract {
                         new TypeReference<DynamicArray<Utf8String>>() {},
                         new TypeReference<DynamicArray<Uint>>() {},
                         new TypeReference<DynamicArray<Utf8String>>() {}));
-        System.out.println(1);
         return new RemoteFunctionCall<Tuple6<List,List,List,List,List,List>>(
                 function, new Callable<Tuple6<List,List,List,List,List,List>>() {
             public Tuple6<List,List,List,List,List,List> call() throws Exception {
                 List<Type> results = executeCallMultipleValueReturn(function);
-                System.out.println(results);
                 DynamicArray<Utf8String> array1 = (DynamicArray<Utf8String>) results.get(0);
-                System.out.println(1);
                 DynamicArray<Utf8String> array2 = (DynamicArray<Utf8String>) results.get(1);
-                System.out.println(2);
                 DynamicArray<Utf8String> array3 = (DynamicArray<Utf8String>) results.get(2);
-                System.out.println(3);
                 DynamicArray<Utf8String> array4 = (DynamicArray<Utf8String>) results.get(3);
-                System.out.println(4);
                 DynamicArray<Uint> array5 = (DynamicArray<Uint>) results.get(4);
-                System.out.println(5);
                 DynamicArray<Utf8String> array6 = (DynamicArray<Utf8String>) results.get(5);
-                System.out.println(6);
 
                 List<Utf8String> resultList1 = array1.getValue();
-                System.out.println(7);
                 List<Utf8String> resultList2 = array2.getValue();
-                System.out.println(8);
                 List<Utf8String> resultList3 = array3.getValue();
-                System.out.println(9);
                 List<Utf8String> resultList4 = array4.getValue();
-                System.out.println(10);
                 List<Uint> resultList5 = array5.getValue();
-                System.out.println(11);
                 List<Utf8String> resultList6 = array6.getValue();
-                System.out.println(12);
                 return new Tuple6<>(resultList1,resultList2,resultList3,resultList4,resultList5,resultList6);
             }
         }

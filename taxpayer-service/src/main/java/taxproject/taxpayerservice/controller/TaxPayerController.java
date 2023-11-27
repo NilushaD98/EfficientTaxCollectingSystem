@@ -32,12 +32,14 @@ public class TaxPayerController {
     }
     @PostMapping("register_new_company")
     public ResponseEntity<StandardResponse> registerNewCompany(@RequestBody RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO,HttpServletRequest request){
+        System.out.println(requestAddNewTaxpayerCompanyDTO);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(201,"Company Register Status : ",taxpayerService.registerNewCompany(requestAddNewTaxpayerCompanyDTO,request.getHeader("Authorization"))), HttpStatus.ACCEPTED
         );
     }
     @PostMapping("register_new_person")
     public ResponseEntity<StandardResponse> registerNewPerson(@RequestBody RequestAddNewTaxpayerPersonDTO requestAddNewTaxpayerPersonDTO,HttpServletRequest request) throws Exception {
+        System.out.println(requestAddNewTaxpayerPersonDTO);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(201,"Person Register Status",taxpayerService.registerNewPerson(requestAddNewTaxpayerPersonDTO,request.getHeader("Authorization"))),HttpStatus.ACCEPTED
         );

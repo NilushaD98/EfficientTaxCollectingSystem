@@ -206,11 +206,13 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
             Tuple6<List, List, List, List, List, List> send = taxPayingService.getAllPaymentDetailsByNIC(nic).send();
             List<Utf8String> invoiceNumbers = send.getValue1();
             List<Utf8String> payeesNICs = send.getValue2();
-            List<Utf8String> payeesNames = send.getValue1();
-            List<Utf8String> periodCodes = send.getValue2();
-            List<Uint> installmentNumbers = send.getValue1();
-            List<Utf8String> paidAmounts = send.getValue2();
+            List<Utf8String> payeesNames = send.getValue3();
+            List<Utf8String> periodCodes = send.getValue4();
+            List<Uint> installmentNumbers = send.getValue5();
+            List<Utf8String> paidAmounts = send.getValue6();
+
             List<ResponsePersonPaymentDetailsDTO> responsePersonPaymentDetailsDTOList = new ArrayList<>();
+
             for(int i=0;i< invoiceNumbers.size();i++){
                 ResponsePersonPaymentDetailsDTO person = new ResponsePersonPaymentDetailsDTO();
                 person.setInvoiceNumber(invoiceNumbers.get(i).getValue());
@@ -235,19 +237,12 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
             ContractGasProvider contractGasProvider = new DefaultGasProvider();
             TaxPayingService taxPayingService = TaxPayingService.load(contractAddress, web3j, credentials, contractGasProvider);
             Tuple6<List, List, List, List, List, List> send = taxPayingService.getAllPaymentDetailsByRegNumber(regNumber).send();
-            System.out.println(send);
             List<Utf8String> invoiceNumbers = send.getValue1();
-            System.out.println(send);
             List<Utf8String> payeesNICs = send.getValue2();
-            System.out.println(send);
             List<Utf8String> payeesNames = send.getValue3();
-            System.out.println(send);
             List<Utf8String> periodCodes = send.getValue4();
-            System.out.println(send);
             List<Uint> installmentNumbers = send.getValue5();
-            System.out.println(send);
             List<Utf8String> paidAmounts = send.getValue6();
-            System.out.println(send);
             List<ResponseCompanyPaymentDetailsDTO> responseCompanyPaymentDetailsDTOList = new ArrayList<>();
             for(int i=0;i< invoiceNumbers.size();i++){
                 ResponseCompanyPaymentDetailsDTO company = new ResponseCompanyPaymentDetailsDTO();
@@ -260,6 +255,7 @@ public class TaxCreditServiceIMPL implements TaxCreditService {
                 responseCompanyPaymentDetailsDTOList.add(company);
             }
             return responseCompanyPaymentDetailsDTOList;
+
         }catch (Exception e){
             log.error(e.getMessage());
             throw new BlockChainFetchException();

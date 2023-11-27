@@ -1,4 +1,4 @@
-package taxproject.taxpayingservice.util;
+package tax_project.authenticationservice.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

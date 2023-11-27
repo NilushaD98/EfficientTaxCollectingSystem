@@ -142,7 +142,7 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
     public String registerNewCompany(RequestAddNewTaxpayerCompanyDTO requestAddNewTaxpayerCompanyDTO,String encryptedToken) {
 
         Director director = new Director(
-                requestAddNewTaxpayerCompanyDTO.getNICOrPassportNo(),
+                requestAddNewTaxpayerCompanyDTO.getNicOrPassportNo(),
                 requestAddNewTaxpayerCompanyDTO.getIssuanceCountryOfPassport(),
                 requestAddNewTaxpayerCompanyDTO.getFullName(),
                 requestAddNewTaxpayerCompanyDTO.getNameWithInitials(),
@@ -197,9 +197,9 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
                 requestAddNewTaxpayerCompanyDTO.getContact(),
                 requestAddNewTaxpayerCompanyDTO.getCompanyEmail(),
                 requestAddNewTaxpayerCompanyDTO.getWebsiteURL(),
-                requestAddNewTaxpayerCompanyDTO.getBOIRegisterStatus(),
-                requestAddNewTaxpayerCompanyDTO.getBOIStartDate(),
-                requestAddNewTaxpayerCompanyDTO.getBOIExpiryDate(),
+                requestAddNewTaxpayerCompanyDTO.getBoiRegisterStatus(),
+                requestAddNewTaxpayerCompanyDTO.getBoiStartDate(),
+                requestAddNewTaxpayerCompanyDTO.getBoiExpiryDate(),
                 requestAddNewTaxpayerCompanyDTO.getBankCode(),
                 requestAddNewTaxpayerCompanyDTO.getForeignCompanyDateOfIncorporation(),
                 requestAddNewTaxpayerCompanyDTO.getForeignCompanyCountryOfIncorporation(),
