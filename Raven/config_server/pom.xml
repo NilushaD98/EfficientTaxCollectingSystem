@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>taxproject</groupId>
-	<artifactId>config_server</artifactId>
+	<artifactId>raven_config</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>config_server</name>
-	<description>Demo project for Spring Boot</description>
+	<name>raven-config</name>
+	<description>Configuration server for the product</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2022.0.5</spring-cloud.version>
