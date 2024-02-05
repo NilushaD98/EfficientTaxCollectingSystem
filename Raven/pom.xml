@@ -24,7 +24,7 @@
 		<module>user-service</module>
 		<module>taxpayer-service</module>
 		<module>tax-paying-service</module>
-		<module>raven-config</module>
+		<module>config_server</module>
 	</modules>
 
 </project>
