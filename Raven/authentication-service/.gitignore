@@ -18,6 +18,8 @@ target/
 *.iws
 *.iml
 *.ipr
+/src/main/java/taxproject/taxpayerservice/config/TaxPayerRegistry.java
+
 
 ### NetBeans ###
 /nbproject/private/

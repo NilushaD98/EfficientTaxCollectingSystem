@@ -126,7 +126,7 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
             TaxPayerRegistry taxPayerRegistry = TaxPayerRegistry.load(contractAddress,web3j,credentials,contractGasProvider);
             TransactionReceipt send = taxPayerRegistry.addPerson(requestAddNewTaxpayerPersonDTO.getNic(), requestAddNewTaxpayerPersonDTO.getNameWithInitials()).send();
             if(send.getStatus().equals("0x1")){
-                return person.getNameWithInitials() +" saved.";
+                return person.getNameWithInitials() +" saved."+ " Tax Payer Id: "+ person.getPersonID();
             }else {
                 personRepo.deleteById(person.getPersonID());
                 throw new SavedErrorException();
@@ -217,7 +217,7 @@ public class TaxpayerServiceIMPL implements TaxpayerService {
             TransactionReceipt send = taxPayerRegistry.addCompany(requestAddNewTaxpayerCompanyDTO.getRegistrationNumber(), requestAddNewTaxpayerCompanyDTO.getCompanyName()).send();
             System.out.println(send);
             if(send.getStatus().equals("0x1")){
-                return company.getCompanyName() +" saved.";
+                return company.getCompanyName() +" saved. Tax Payer Company Id: "+ company.getCompanyID();
             }else {
                 personRepo.deleteById(company.getCompanyID());
                 throw new SavedErrorException();
